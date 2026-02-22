@@ -1,0 +1,83 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="using:HPPDonat.ViewModels"
+             xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             mc:Ignorable="d"
+             d:DesignWidth="1024"
+             d:DesignHeight="720"
+             x:Class="HPPDonat.Views.ResepProduksiView"
+             x:DataType="viewModels:ResepProduksiViewModel">
+  <StackPanel Spacing="12">
+    <TextBlock Classes="section-title" Text="Resep Produksi" />
+
+    <Border Classes="section-panel">
+      <TextBlock Text="Isi JumlahDipakai per bahan. Modal bahan dihitung otomatis tanpa tombol."
+                 ToolTip.Tip="JumlahDipakai = jumlah bahan yang digunakan dalam 1 batch produksi." />
+    </Border>
+
+    <Border Classes="section-panel">
+      <dg:DataGrid ItemsSource="{Binding ResepItems}"
+                   AutoGenerateColumns="False"
+                   GridLinesVisibility="All"
+                   IsReadOnly="False"
+                   MinHeight="430">
+        <dg:DataGrid.Columns>
+          <dg:DataGridTextColumn Width="2*" Binding="{Binding NamaBahan}" IsReadOnly="True">
+            <dg:DataGridTextColumn.Header>
+              <TextBlock Text="Nama Bahan" ToolTip.Tip="Nama bahan sesuai data master." />
+            </dg:DataGridTextColumn.Header>
+          </dg:DataGridTextColumn>
+
+          <dg:DataGridTextColumn Width="*" Binding="{Binding JumlahDipakai}">
+            <dg:DataGridTextColumn.Header>
+              <TextBlock Text="Jumlah Dipakai" ToolTip.Tip="JumlahDipakai = kebutuhan bahan per batch produksi." />
+            </dg:DataGridTextColumn.Header>
+          </dg:DataGridTextColumn>
+
+          <dg:DataGridTextColumn Width="*" Binding="{Binding NettoPerPack}" IsReadOnly="True">
+            <dg:DataGridTextColumn.Header>
+              <TextBlock Text="Netto/Pack" ToolTip.Tip="Diambil dari master bahan." />
+            </dg:DataGridTextColumn.Header>
+          </dg:DataGridTextColumn>
+
+          <dg:DataGridTextColumn Width="*" Binding="{Binding HargaPerPack}" IsReadOnly="True">
+            <dg:DataGridTextColumn.Header>
+              <TextBlock Text="Harga/Pack" ToolTip.Tip="Diambil dari master bahan." />
+            </dg:DataGridTextColumn.Header>
+          </dg:DataGridTextColumn>
+
+          <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
+            <dg:DataGridTemplateColumn.Header>
+              <TextBlock Text="Modal Bahan" ToolTip.Tip="ModalBahan = (JumlahDipakai / NettoPerPack) × HargaPerPack." />
+            </dg:DataGridTemplateColumn.Header>
+            <dg:DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding ModalBahan, Converter={StaticResource RupiahConverter}}"
+                           VerticalAlignment="Center" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellTemplate>
+          </dg:DataGridTemplateColumn>
+        </dg:DataGrid.Columns>
+      </dg:DataGrid>
+    </Border>
+
+    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+      <Border Grid.Column="0" Classes="card" ToolTip.Tip="TotalModalAdonan = SUM seluruh modal bahan.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Total Modal Adonan" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="1" Classes="card" ToolTip.Tip="HPPDonat = TotalModalAdonan / JumlahDonatDihasilkan.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="HPP Dasar Donat" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppDonat, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+    </Grid>
+  </StackPanel>
+</UserControl>
+

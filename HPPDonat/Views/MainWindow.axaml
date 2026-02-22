@@ -1,0 +1,93 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="using:HPPDonat.ViewModels"
+        mc:Ignorable="d"
+        d:DesignWidth="1400"
+        d:DesignHeight="860"
+        x:Class="HPPDonat.Views.MainWindow"
+        x:DataType="viewModels:MainWindowViewModel"
+        Title="HPP Donat Calculator"
+        MinWidth="1120"
+        MinHeight="720"
+        Width="1400"
+        Height="860">
+  <Grid ColumnDefinitions="250,*">
+    <Border Grid.Column="0" Classes="sidebar">
+      <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*,Auto">
+        <TextBlock Grid.Row="0"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Text="{Binding NamaAplikasi}"
+                   Margin="0,0,0,18"
+                   TextWrapping="Wrap" />
+
+        <Button Grid.Row="1"
+                Classes="sidebar-button"
+                Content="Dashboard"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="Dashboard"
+                ToolTip.Tip="Ringkasan total modal, HPP final, harga jual, dan profit." />
+
+        <Button Grid.Row="2"
+                Classes="sidebar-button"
+                Content="Master Bahan"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="MasterBahan"
+                ToolTip.Tip="Kelola data master bahan baku donat." />
+
+        <Button Grid.Row="3"
+                Classes="sidebar-button"
+                Content="Resep Produksi"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="Resep"
+                ToolTip.Tip="Atur jumlah bahan yang dipakai per batch produksi." />
+
+        <Button Grid.Row="4"
+                Classes="sidebar-button"
+                Content="Manajemen Topping"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="Topping"
+                ToolTip.Tip="Atur topping aktif dan biaya topping per donat." />
+
+        <Button Grid.Row="5"
+                Classes="sidebar-button"
+                Content="Kalkulator Produksi"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="Kalkulator"
+                ToolTip.Tip="Input jumlah donat, waste, dan target profit untuk simulasi harga jual." />
+
+        <Button Grid.Row="6"
+                VerticalAlignment="Top"
+                Classes="sidebar-button"
+                Content="Analisa Profit"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="Analisa"
+                ToolTip.Tip="Simulasi skenario profit untuk evaluasi bisnis." />
+
+        <StackPanel Grid.Row="7" Spacing="6">
+          <TextBlock Text="Mode Tema" FontWeight="SemiBold" />
+          <ToggleSwitch IsChecked="{Binding IsDarkMode}"
+                        OnContent="Gelap"
+                        OffContent="Terang"
+                        ToolTip.Tip="Aktifkan mode gelap atau mode terang." />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="22">
+      <Border Classes="card" Padding="14,10" Margin="0,0,0,14">
+        <TextBlock FontSize="22"
+                   FontWeight="SemiBold"
+                   Text="{Binding JudulHalaman}"
+                   ToolTip.Tip="Halaman aktif yang sedang Anda gunakan." />
+      </Border>
+
+      <ScrollViewer Grid.Row="1">
+        <ContentControl Content="{Binding CurrentPage}" />
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</Window>
+

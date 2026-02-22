@@ -1,0 +1,85 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="using:HPPDonat.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="1024"
+             d:DesignHeight="720"
+             x:Class="HPPDonat.Views.KalkulatorProduksiView"
+             x:DataType="viewModels:KalkulatorProduksiViewModel">
+  <Grid ColumnDefinitions="1.1*,1*" ColumnSpacing="12">
+    <Border Grid.Column="0" Classes="section-panel">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="section-title" Text="Kalkulator Produksi" />
+
+        <StackPanel Spacing="6">
+          <TextBlock Text="Jumlah Donat Dihasilkan" />
+          <NumericUpDown Value="{Binding ProduksiSetting.JumlahDonatDihasilkan, Mode=TwoWay}"
+                         Minimum="1"
+                         Maximum="100000"
+                         Increment="10"
+                         ToolTip.Tip="JumlahDonatDihasilkan = total donat sebelum dikurangi waste." />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <TextBlock Text="Waste (%)" />
+          <NumericUpDown Value="{Binding ProduksiSetting.WastePersen, Mode=TwoWay}"
+                         Minimum="0"
+                         Maximum="99"
+                         Increment="0.5"
+                         ToolTip.Tip="WastePersen = persentase kerusakan atau kehilangan produksi." />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <TextBlock Text="Target Profit (%)" />
+          <NumericUpDown Value="{Binding ProduksiSetting.TargetProfitPersen, Mode=TwoWay}"
+                         Minimum="1"
+                         Maximum="95"
+                         Increment="1"
+                         ToolTip.Tip="TargetProfitPersen = margin laba yang diinginkan untuk menentukan harga jual." />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <TextBlock Text="Hari Produksi per Bulan" />
+          <NumericUpDown Value="{Binding ProduksiSetting.HariProduksiPerBulan, Mode=TwoWay}"
+                         Minimum="1"
+                         Maximum="31"
+                         Increment="1"
+                         ToolTip.Tip="Dipakai untuk menghitung estimasi profit bulanan." />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <StackPanel Grid.Column="1" Spacing="12">
+      <Border Classes="card" ToolTip.Tip="ProduksiEfektif = JumlahDonatDihasilkan × (1 - WastePersen/100).">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Produksi Efektif" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} donat'}" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card" ToolTip.Tip="HPPSetelahWaste = TotalModalAdonan / ProduksiEfektif.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="HPP Setelah Waste" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppSetelahWaste, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card" ToolTip.Tip="HargaJual = HPPFinal / (1 - TargetProfitPersen/100), lalu dibulatkan ke atas per Rp100.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Harga Jual Otomatis" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HargaJual, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card" ToolTip.Tip="TotalProfit = (HargaJual - HPPFinal) × ProduksiEfektif.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Profit Batch" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalProfit, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </Grid>
+</UserControl>
+

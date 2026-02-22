@@ -1,0 +1,64 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="using:HPPDonat.ViewModels"
+             xmlns:model="using:HPPDonat.Models"
+             xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             mc:Ignorable="d"
+             d:DesignWidth="1024"
+             d:DesignHeight="720"
+             x:Class="HPPDonat.Views.MasterBahanView"
+             x:DataType="viewModels:MasterBahanViewModel">
+  <StackPanel Spacing="12">
+    <TextBlock Classes="section-title" Text="Master Bahan" />
+
+    <Border Classes="section-panel">
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <Button Classes="action-button"
+                Content="+ Tambah Bahan"
+                Command="{Binding TambahBahanCommand}"
+                ToolTip.Tip="Tambah baris bahan baru untuk data master." />
+        <Button Classes="action-button"
+                Content="Hapus Bahan Terpilih"
+                Command="{Binding HapusBahanCommand}"
+                ToolTip.Tip="Hapus bahan yang dipilih dari master dan resep." />
+      </StackPanel>
+    </Border>
+
+    <Border Classes="section-panel">
+      <StackPanel Spacing="10">
+        <TextBlock Text="Ubah data langsung di grid. Semua perubahan otomatis disimpan ke database SQLite."
+                   ToolTip.Tip="NettoPerPack = berat bersih bahan dalam satu kemasan." />
+
+        <dg:DataGrid ItemsSource="{Binding BahanItems}"
+                     SelectedItem="{Binding SelectedBahan, Mode=TwoWay}"
+                     AutoGenerateColumns="False"
+                     GridLinesVisibility="All"
+                     IsReadOnly="False"
+                     MinHeight="420">
+          <dg:DataGrid.Columns>
+            <dg:DataGridTextColumn Width="2*" Binding="{Binding NamaBahan}">
+              <dg:DataGridTextColumn.Header>
+                <TextBlock Text="Nama Bahan" ToolTip.Tip="Nama bahan baku yang digunakan dalam produksi." />
+              </dg:DataGridTextColumn.Header>
+            </dg:DataGridTextColumn>
+
+            <dg:DataGridTextColumn Width="*" Binding="{Binding NettoPerPack}">
+              <dg:DataGridTextColumn.Header>
+                <TextBlock Text="Netto per Pack" ToolTip.Tip="NettoPerPack = berat bersih bahan dalam satu kemasan." />
+              </dg:DataGridTextColumn.Header>
+            </dg:DataGridTextColumn>
+
+            <dg:DataGridTextColumn Width="*" Binding="{Binding HargaPerPack}">
+              <dg:DataGridTextColumn.Header>
+                <TextBlock Text="Harga per Pack" ToolTip.Tip="HargaPerPack = harga beli satu kemasan bahan." />
+              </dg:DataGridTextColumn.Header>
+            </dg:DataGridTextColumn>
+          </dg:DataGrid.Columns>
+        </dg:DataGrid>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>
+

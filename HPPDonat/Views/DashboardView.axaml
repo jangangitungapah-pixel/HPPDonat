@@ -1,0 +1,73 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="using:HPPDonat.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="1024"
+             d:DesignHeight="720"
+             x:Class="HPPDonat.Views.DashboardView"
+             x:DataType="viewModels:DashboardViewModel">
+  <StackPanel Spacing="12">
+    <TextBlock Classes="section-title" Text="Ringkasan Produksi" />
+
+    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
+      <Border Grid.Row="0" Grid.Column="0" Classes="card" ToolTip.Tip="Total modal adonan dari seluruh bahan dalam 1 batch.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Total Modal Adonan" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="0" Grid.Column="1" Classes="card" ToolTip.Tip="HPP final per donat setelah ditambah total topping aktif.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="HPP Final Donat" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppFinal, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="1" Grid.Column="0" Classes="card" ToolTip.Tip="Harga jual otomatis berdasarkan target profit dengan pembulatan ke atas per Rp100.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Harga Jual Rekomendasi" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HargaJual, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="1" Grid.Column="1" Classes="card" ToolTip.Tip="Profit estimasi total untuk 1 batch produksi efektif.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Profit Batch" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalProfit, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="2" Grid.Column="0" Classes="card" ToolTip.Tip="Estimasi laba harian menggunakan hasil batch saat ini.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Estimasi Profit Harian" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.EstimasiHarian, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Row="2" Grid.Column="1" Classes="card" ToolTip.Tip="Estimasi laba bulanan berdasarkan hari produksi per bulan.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Estimasi Profit Bulanan" />
+          <TextBlock Classes="card-value" Text="{Binding Ringkasan.EstimasiBulanan, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Classes="section-panel" ToolTip.Tip="ProduksiEfektif = JumlahDonatDihasilkan × (1 - WastePersen/100).">
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+        <StackPanel>
+          <TextBlock FontWeight="SemiBold" Text="Produksi Efektif" />
+          <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} donat'}" />
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock FontWeight="SemiBold" Text="HPP Setelah Waste" />
+          <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Ringkasan.HppSetelahWaste, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+  </StackPanel>
+</UserControl>
+
