@@ -78,6 +78,18 @@ public sealed class ResepVarianRepository : IResepVarianRepository
         await command.ExecuteNonQueryAsync();
     }
 
+    public async Task RenameAsync(int id, string namaVarian)
+    {
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = "UPDATE ResepVarian SET NamaVarian = $nama WHERE Id = $id";
+        command.Parameters.AddWithValue("$id", id);
+        command.Parameters.AddWithValue("$nama", namaVarian);
+        await command.ExecuteNonQueryAsync();
+    }
+
     public async Task DeleteAsync(int id)
     {
         await using var connection = _connectionFactory.CreateConnection();

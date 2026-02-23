@@ -30,7 +30,7 @@
                          ToolTip.Tip="Ubah target profit untuk melihat dampaknya ke harga jual dan laba." />
         </StackPanel>
 
-        <StackPanel Spacing="6">
+        <StackPanel Grid.Column="1" Spacing="6">
           <TextBlock Text="Simulasi Waste (%)" />
           <NumericUpDown Value="{Binding SimulasiWastePersen, Mode=TwoWay}"
                          Minimum="0"

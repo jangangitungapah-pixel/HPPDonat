@@ -22,13 +22,15 @@
       <Border Classes="section-panel">
         <StackPanel Spacing="14">
           <StackPanel Spacing="6">
-            <TextBlock Text="Jumlah Donat Dihasilkan" />
-            <NumericUpDown Value="{Binding ProduksiSetting.JumlahDonatDihasilkan, Mode=TwoWay}"
+            <TextBlock Text="Berat per Donat (gram)" />
+            <NumericUpDown Value="{Binding ProduksiSetting.BeratPerDonat, Mode=TwoWay}"
                            Minimum="1"
-                           Maximum="100000"
-                           Increment="10"
-                           FormatString="N0"
-                           ToolTip.Tip="JumlahDonatDihasilkan = total donat sebelum dikurangi waste." />
+                           Maximum="500"
+                           Increment="1"
+                           FormatString="N2"
+                           ToolTip.Tip="BeratPerDonat digunakan untuk menghitung otomatis jumlah donat dari total berat adonan." />
+            <TextBlock Classes="muted"
+                       Text="{Binding ProduksiSetting.JumlahDonatDihasilkan, StringFormat='Jumlah donat otomatis: {0:N2} pcs'}" />
           </StackPanel>
 
           <StackPanel Spacing="6">

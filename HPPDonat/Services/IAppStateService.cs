@@ -23,6 +23,7 @@ public interface IAppStateService : INotifyPropertyChanged
     Task PilihVarianResepAsync(ResepVarianModel? varian);
     Task TambahVarianResepAsync(string? namaVarian = null, bool duplikatDariVarianAktif = false);
     Task DuplikasiVarianAktifAsync();
+    Task UbahNamaVarianResepAsync(ResepVarianModel? varian, string? namaBaru);
     Task HapusVarianResepAsync(ResepVarianModel? varian);
     Task ResetResepAktifAsync();
     void ClearErrorStatus();

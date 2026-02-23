@@ -7,7 +7,9 @@
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="HPPDonat.Views.DashboardView"
              x:DataType="viewModels:DashboardViewModel">
-  <Grid Classes="dashboard-root" RowDefinitions="Auto,Auto,*">
+  <ScrollViewer VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled">
+    <Grid Classes="dashboard-root" RowDefinitions="Auto,Auto,Auto">
     <Border Grid.Row="0" Classes="dashboard-hero" Margin="0,0,0,16">
       <Grid ColumnDefinitions="2*,1.2*" ColumnSpacing="20">
         <StackPanel Spacing="14">
@@ -115,7 +117,7 @@
 
     <Grid Grid.Row="2" ColumnDefinitions="1.7*,1.1*" ColumnSpacing="16">
       <Border Classes="dashboard-surface">
-        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="14">
+        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
           <Grid ColumnDefinitions="*,Auto">
             <StackPanel Spacing="2">
               <TextBlock Text="Cost &amp; Margin Engine" Classes="dashboard-panel-title" />
@@ -186,7 +188,7 @@
         </Grid>
       </Border>
 
-      <Grid Grid.Column="1" RowDefinitions="Auto,*" RowSpacing="12">
+      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" RowSpacing="12">
         <Border Classes="dashboard-signal">
           <StackPanel Spacing="10">
             <TextBlock Text="Signal Board" Classes="dashboard-panel-title" />
@@ -212,7 +214,7 @@
         </Border>
 
         <Border Grid.Row="1" Classes="dashboard-surface">
-          <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+          <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
             <TextBlock Text="Quick Actions" Classes="dashboard-panel-title" />
 
             <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10">
@@ -241,5 +243,6 @@
         </Border>
       </Grid>
     </Grid>
-  </Grid>
+    </Grid>
+  </ScrollViewer>
 </UserControl>

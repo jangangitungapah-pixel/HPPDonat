@@ -6,6 +6,7 @@ public sealed class ProduksiSettingModel : ReactiveObject
 {
     private int _id = 1;
     private decimal _jumlahDonatDihasilkan = 100m;
+    private decimal _beratPerDonat = 50m;
     private decimal _wastePersen;
     private decimal _targetProfitPersen = 30m;
     private int _hariProduksiPerBulan = 26;
@@ -20,6 +21,12 @@ public sealed class ProduksiSettingModel : ReactiveObject
     {
         get => _jumlahDonatDihasilkan;
         set => this.RaiseAndSetIfChanged(ref _jumlahDonatDihasilkan, value);
+    }
+
+    public decimal BeratPerDonat
+    {
+        get => _beratPerDonat;
+        set => this.RaiseAndSetIfChanged(ref _beratPerDonat, value);
     }
 
     public decimal WastePersen

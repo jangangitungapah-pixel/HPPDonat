@@ -25,9 +25,14 @@ public sealed class ResepProduksiHeadlessTests
 
     private sealed class ConfirmAlwaysTrueDialogService : Services.IUserDialogService
     {
-        public Task<bool> ConfirmAsync(string title, string message)
+        public Task<bool> ConfirmAsync(string title, string message, string confirmText = "Ya", string cancelText = "Batal")
         {
             return Task.FromResult(true);
+        }
+
+        public Task<string?> PromptTextAsync(string title, string message, string initialValue = "", string confirmText = "Simpan", string cancelText = "Batal")
+        {
+            return Task.FromResult<string?>(initialValue);
         }
     }
 
@@ -152,6 +157,22 @@ public sealed class ResepProduksiHeadlessTests
         }
 
         public Task DuplikasiVarianAktifAsync() => TambahVarianResepAsync("Copy", true);
+
+        public Task UbahNamaVarianResepAsync(Models.ResepVarianModel? varian, string? namaBaru)
+        {
+            if (varian is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var target = ResepVarianItems.FirstOrDefault(item => item.Id == varian.Id);
+            if (target is not null && !string.IsNullOrWhiteSpace(namaBaru))
+            {
+                target.NamaVarian = namaBaru.Trim();
+            }
+
+            return Task.CompletedTask;
+        }
 
         public Task HapusVarianResepAsync(Models.ResepVarianModel? varian)
         {

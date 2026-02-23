@@ -1,212 +1,372 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:HPPDonat.ViewModels"
              xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             xmlns:ic="using:FluentIcons.Avalonia"
              mc:Ignorable="d"
-             d:DesignWidth="1120"
-             d:DesignHeight="760"
+             d:DesignWidth="1180"
+             d:DesignHeight="820"
              x:Class="HPPDonat.Views.ResepProduksiView"
              x:DataType="viewModels:ResepProduksiViewModel">
-  <StackPanel Spacing="12">
-    <Border Classes="hero" ToolTip.Tip="Halaman resep menghitung HPP secara realtime sesuai rumus." >
-      <Grid ColumnDefinitions="1.8*,*" ColumnSpacing="14">
-        <StackPanel Spacing="4">
-          <TextBlock Classes="section-title" Text="Resep Produksi Fungsional" />
-          <TextBlock Classes="muted"
-                     Text="Rumus realtime: ModalBahan = (JumlahDipakai / NettoPerPack) x HargaPerPack, TotalModalAdonan = SUM ModalBahan, HPPDonat = TotalModalAdonan / JumlahDonatDihasilkan, HPPFinal = HPPDonat + TotalTopping." />
-        </StackPanel>
+  <ScrollViewer VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Spacing="12">
+      <Border Classes="hero recipe-hero"
+              ToolTip.Tip="Halaman resep menghitung HPP secara realtime sesuai rumus.">
+        <Grid ColumnDefinitions="2.3*,1.6*" ColumnSpacing="16">
+          <StackPanel Spacing="8">
+            <TextBlock Classes="section-title" Text="Resep Produksi Command Center" />
+            <TextBlock Classes="muted"
+                       Text="Ubah formula dengan cepat, pantau kesehatan resep, dan lihat dampak biaya secara realtime per bahan." />
 
-        <StackPanel Grid.Column="1" Spacing="8">
-          <Border Padding="10"
-                  CornerRadius="12"
-                  Background="#22000000"
-                  BorderBrush="#22000000"
-                  BorderThickness="1">
-            <StackPanel Spacing="6">
-              <TextBlock Classes="card-title" Text="Jumlah Donat Dihasilkan" />
-              <NumericUpDown Value="{Binding ProduksiSetting.JumlahDonatDihasilkan, Mode=TwoWay}"
-                             Minimum="1"
-                             Maximum="100000"
-                             Increment="10"
-                             FormatString="N0"
-                             ToolTip.Tip="JumlahDonatDihasilkan = total donat dari 1 batch adonan." />
-            </StackPanel>
-          </Border>
+            <Border Classes="recipe-hero-card">
+              <StackPanel Spacing="6">
+                <TextBlock Classes="card-title" Text="Rumus Aktif" />
+                <TextBlock Classes="muted"
+                           TextWrapping="Wrap"
+                           Text="JumlahDonat = TotalBeratAdonan / BeratPerDonat | ModalBahan = (JumlahDipakai / NettoPerPack) x HargaPerPack | HPPDonat = TotalModalAdonan / JumlahDonat | HPPFinal = HPPDonat + TotalTopping" />
+              </StackPanel>
+            </Border>
 
-          <Border Padding="10"
-                  CornerRadius="12"
-                  Background="#22000000"
-                  BorderBrush="#22000000"
-                  BorderThickness="1">
-            <StackPanel Spacing="6">
-              <TextBlock Classes="card-title" Text="Varian Resep Aktif" />
-              <ComboBox ItemsSource="{Binding ResepVarianItems}"
-                        SelectedItem="{Binding SelectedVarian, Mode=TwoWay}"
-                        ToolTip.Tip="Pilih varian resep yang ingin diedit.">
-                <ComboBox.ItemTemplate>
-                  <DataTemplate>
-                    <TextBlock Text="{Binding NamaVarian}" />
-                  </DataTemplate>
-                </ComboBox.ItemTemplate>
-              </ComboBox>
-              <WrapPanel Orientation="Horizontal" ItemHeight="32" ItemWidth="140">
-                <Button Content="+ Varian"
-                        Command="{Binding TambahVarianCommand}"
-                        Classes="action-button"
-                        Margin="0,0,8,8"
-                        ToolTip.Tip="Tambah varian resep baru dengan nilai awal kosong." />
-                <Button Content="Duplikasi Varian"
-                        Command="{Binding DuplikasiVarianCommand}"
-                        Classes="ghost-button"
-                        Margin="0,0,8,8"
-                        ToolTip.Tip="Duplikasi varian aktif untuk simulasi resep alternatif." />
-                <Button Content="Hapus Varian"
-                        Command="{Binding HapusVarianCommand}"
-                        Classes="ghost-button"
-                        Margin="0,0,8,0"
-                        ToolTip.Tip="Hapus varian resep yang dipilih. Minimal harus ada satu varian." />
-              </WrapPanel>
-            </StackPanel>
-          </Border>
-        </StackPanel>
-      </Grid>
-    </Border>
-
-    <Border Classes="section-panel" IsVisible="{Binding HasResepItems}">
-      <StackPanel Spacing="10">
-        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-          <TextBlock Classes="muted" Text="Setiap perubahan jumlah bahan tersimpan otomatis. Anda bisa reset nilai jumlah dipakai untuk varian aktif." />
-          <Button Grid.Column="1"
-                  Content="Reset Jumlah Dipakai"
-                  Command="{Binding ResetResepCommand}"
-                  Classes="ghost-button"
-                  ToolTip.Tip="Reset seluruh input JumlahDipakai pada varian aktif ke nol." />
-        </Grid>
-
-        <dg:DataGrid ItemsSource="{Binding ResepItems}"
-                     AutoGenerateColumns="False"
-                     GridLinesVisibility="Horizontal"
-                     IsReadOnly="False"
-                     HeadersVisibility="Column"
-                     MinHeight="430">
-          <dg:DataGrid.Columns>
-            <dg:DataGridTextColumn Width="2*" Binding="{Binding NamaBahan}" IsReadOnly="True">
-              <dg:DataGridTextColumn.Header>
-                <TextBlock Text="Nama Bahan" ToolTip.Tip="Nama bahan mengikuti data master bahan." />
-              </dg:DataGridTextColumn.Header>
-            </dg:DataGridTextColumn>
-
-            <dg:DataGridTextColumn Width="*" Binding="{Binding Satuan}" IsReadOnly="True">
-              <dg:DataGridTextColumn.Header>
-                <TextBlock Text="Satuan" ToolTip.Tip="Satuan bahan untuk memastikan input jumlah tidak salah unit." />
-              </dg:DataGridTextColumn.Header>
-            </dg:DataGridTextColumn>
-
-            <dg:DataGridTemplateColumn Width="*">
-              <dg:DataGridTemplateColumn.Header>
-                <TextBlock Text="Jumlah Dipakai" ToolTip.Tip="JumlahDipakai = kebutuhan bahan untuk 1 batch." />
-              </dg:DataGridTemplateColumn.Header>
-              <dg:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                  <TextBlock VerticalAlignment="Center" Text="{Binding JumlahDipakai, StringFormat='{}{0:N2}'}" />
-                </DataTemplate>
-              </dg:DataGridTemplateColumn.CellTemplate>
-              <dg:DataGridTemplateColumn.CellEditingTemplate>
-                <DataTemplate>
-                  <NumericUpDown Value="{Binding JumlahDipakai, Mode=TwoWay}"
-                                 Minimum="0"
-                                 Maximum="1000000"
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+              <Border Grid.Column="0" Classes="recipe-hero-card">
+                <StackPanel Spacing="6">
+                  <TextBlock Classes="card-title" Text="Berat per Donat (gram)" />
+                  <NumericUpDown Value="{Binding ProduksiSetting.BeratPerDonat, Mode=TwoWay}"
+                                 Minimum="1"
+                                 Maximum="500"
                                  Increment="1"
+                                 FormatString="N2"
+                                 ToolTip.Tip="Input berat donat yang diinginkan. Jumlah donat per batch dihitung otomatis dari total berat adonan dibagi angka ini." />
+                  <TextBlock Classes="muted"
+                             Text="{Binding ProduksiSetting.JumlahDonatDihasilkan, StringFormat='Jumlah donat otomatis: {0:N2} pcs'}" />
+                </StackPanel>
+              </Border>
+
+              <Border Grid.Column="1" Classes="recipe-hero-card">
+                <StackPanel Spacing="4">
+                  <TextBlock Classes="card-title" Text="Waste Produksi (%)" />
+                  <NumericUpDown Value="{Binding ProduksiSetting.WastePersen, Mode=TwoWay}"
+                                 Minimum="0"
+                                 Maximum="99"
+                                 Increment="0.5"
                                  FormatString="N2" />
-                </DataTemplate>
-              </dg:DataGridTemplateColumn.CellEditingTemplate>
-            </dg:DataGridTemplateColumn>
+                </StackPanel>
+              </Border>
+            </Grid>
+          </StackPanel>
 
-            <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
-              <dg:DataGridTemplateColumn.Header>
-                <TextBlock Text="Modal Bahan" ToolTip.Tip="ModalBahan = (JumlahDipakai / NettoPerPack) x HargaPerPack." />
-              </dg:DataGridTemplateColumn.Header>
-              <dg:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                  <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding ModalBahan, Converter={StaticResource RupiahConverter}}" />
-                </DataTemplate>
-              </dg:DataGridTemplateColumn.CellTemplate>
-            </dg:DataGridTemplateColumn>
+          <StackPanel Grid.Column="1" Spacing="10">
+            <Border Classes="recipe-hero-card">
+              <StackPanel Spacing="8">
+                <TextBlock Classes="card-title" Text="Target Profit (%)" />
+                <NumericUpDown Value="{Binding ProduksiSetting.TargetProfitPersen, Mode=TwoWay}"
+                               Minimum="1"
+                               Maximum="95"
+                               Increment="1"
+                               FormatString="N2" />
+              </StackPanel>
+            </Border>
 
-            <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
-              <dg:DataGridTemplateColumn.Header>
-                <TextBlock Text="Kontribusi" ToolTip.Tip="Persentase kontribusi modal bahan terhadap total modal adonan." />
-              </dg:DataGridTemplateColumn.Header>
-              <dg:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                  <TextBlock VerticalAlignment="Center" Text="{Binding KontribusiPersen, StringFormat='{}{0:N2}%'}" />
-                </DataTemplate>
-              </dg:DataGridTemplateColumn.CellTemplate>
-            </dg:DataGridTemplateColumn>
+            <Border Classes="recipe-hero-card">
+              <StackPanel Spacing="8">
+                <TextBlock Classes="card-title" Text="Varian Resep Aktif" />
+                <ComboBox ItemsSource="{Binding ResepVarianItems}"
+                          SelectedItem="{Binding SelectedVarian, Mode=TwoWay}">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding NamaVarian}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
 
-            <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
-              <dg:DataGridTemplateColumn.Header>
-                <TextBlock Text="Validasi" ToolTip.Tip="Status validasi per baris resep. Cek baris yang belum lengkap." />
-              </dg:DataGridTemplateColumn.Header>
-              <dg:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                  <TextBlock VerticalAlignment="Center"
-                             Text="{Binding ValidationMessage}"
-                             Foreground="{Binding ValidationMessage, Converter={StaticResource ValidationBrushConverter}}" />
-                </DataTemplate>
-              </dg:DataGridTemplateColumn.CellTemplate>
-            </dg:DataGridTemplateColumn>
-          </dg:DataGrid.Columns>
-        </dg:DataGrid>
-      </StackPanel>
-    </Border>
+                <TextBlock Classes="muted"
+                           Text="{Binding JumlahVarianResep, StringFormat='{}{0} varian tersimpan'}" />
 
-    <Border Classes="section-panel" IsVisible="{Binding HasResepItems, Converter={StaticResource InverseBooleanConverter}}">
-      <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,20">
-        <TextBlock FontSize="18" FontWeight="SemiBold" Text="Belum ada bahan untuk disusun menjadi resep" />
-        <TextBlock Classes="muted" Text="Tambahkan bahan terlebih dahulu agar halaman resep bisa digunakan." />
-        <Button Content="+ Tambah Bahan Sekarang" Command="{Binding TambahBahanCepatCommand}" Classes="action-button" />
-      </StackPanel>
-    </Border>
+                <WrapPanel Orientation="Horizontal">
+                  <Button Content="+ Varian"
+                          Command="{Binding TambahVarianCommand}"
+                          Classes="action-button"
+                          MinWidth="116"
+                          MinHeight="38"
+                          HorizontalContentAlignment="Center"
+                          Margin="0,0,8,8" />
+                  <Button Content="Duplikasi"
+                          Command="{Binding DuplikasiVarianCommand}"
+                          Classes="ghost-button"
+                          MinWidth="116"
+                          MinHeight="38"
+                          HorizontalContentAlignment="Center"
+                          Margin="0,0,8,8" />
+                  <Button Content="Rename"
+                          Command="{Binding UbahNamaVarianCommand}"
+                          Classes="ghost-button"
+                          MinWidth="116"
+                          MinHeight="38"
+                          HorizontalContentAlignment="Center"
+                          Margin="0,0,8,8" />
+                  <Button Content="Hapus"
+                          Command="{Binding HapusVarianCommand}"
+                          Classes="ghost-button"
+                          MinWidth="116"
+                          MinHeight="38"
+                          HorizontalContentAlignment="Center"
+                          Margin="0,0,8,0" />
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </Grid>
+      </Border>
 
-    <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="12">
-      <Border Grid.Column="0" Classes="kpi-card" ToolTip.Tip="TotalModalAdonan = SUM seluruh ModalBahan.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="1. Total Modal Adonan" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" />
+      <Border Classes="section-panel" IsVisible="{Binding HasResepItems}">
+        <StackPanel Spacing="10">
+          <Grid ColumnDefinitions="2.4*,1.3*,Auto" ColumnSpacing="10" VerticalAlignment="Center">
+            <Border Grid.Column="0" Classes="recipe-search-box">
+              <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <ic:SymbolIcon Symbol="Search" VerticalAlignment="Center" FontSize="15" />
+                <TextBox Grid.Column="1"
+                         Watermark="Cari bahan: tepung, gula, susu..."
+                         Text="{Binding KataKunciResep, Mode=TwoWay}" />
+              </Grid>
+            </Border>
+
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding UrutanResepOptions}"
+                      SelectedItem="{Binding UrutanResep, Mode=TwoWay}" />
+
+            <Button Grid.Column="2"
+                    Content="Reset Filter"
+                    Command="{Binding ClearFilterResepCommand}"
+                    Classes="ghost-button" />
+          </Grid>
+
+          <WrapPanel Orientation="Horizontal">
+            <CheckBox Content="Hanya baris bermasalah"
+                      IsChecked="{Binding FilterHanyaBermasalah, Mode=TwoWay}"
+                      VerticalAlignment="Center"
+                      Margin="0,0,8,8" />
+            <Button Content="Scale 0.5x"
+                    Command="{Binding TerapkanSkalaCepatCommand}"
+                    CommandParameter="0.5"
+                    Classes="recipe-scale-button"
+                    MinWidth="108"
+                    MinHeight="36"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,8,8" />
+            <Button Content="Scale 1.25x"
+                    Command="{Binding TerapkanSkalaCepatCommand}"
+                    CommandParameter="1.25"
+                    Classes="recipe-scale-button"
+                    MinWidth="108"
+                    MinHeight="36"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,8,8" />
+            <Button Content="Scale 2x"
+                    Command="{Binding TerapkanSkalaCepatCommand}"
+                    CommandParameter="2"
+                    Classes="recipe-scale-button"
+                    MinWidth="108"
+                    MinHeight="36"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,8,8" />
+          </WrapPanel>
+
+          <TextBlock Classes="muted" Text="{Binding RingkasanFilterResep}" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Column="1" Classes="kpi-card" ToolTip.Tip="HPPDonat = TotalModalAdonan / JumlahDonatDihasilkan.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="2. HPP Dasar Donat" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppDonat, Converter={StaticResource RupiahConverter}}" />
+      <Border Classes="section-panel recipe-health-panel" IsVisible="{Binding HasResepItems}">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="card-title" Text="Kesehatan Resep" />
+
+          <WrapPanel Orientation="Horizontal" ItemWidth="200" ItemHeight="96">
+            <Border Classes="recipe-health-card">
+              <StackPanel>
+                <TextBlock Classes="card-title" Text="Total Baris" />
+                <TextBlock Classes="recipe-health-value"
+                           Text="{Binding JumlahBarisResep, StringFormat='{}{0:N0}'}" />
+              </StackPanel>
+            </Border>
+
+            <Border Classes="recipe-health-card">
+              <StackPanel>
+                <TextBlock Classes="card-title" Text="Baris Valid" />
+                <TextBlock Classes="recipe-health-value positive"
+                           Text="{Binding JumlahBarisValid, StringFormat='{}{0:N0}'}" />
+              </StackPanel>
+            </Border>
+
+            <Border Classes="recipe-health-card">
+              <StackPanel>
+                <TextBlock Classes="card-title" Text="Belum Dipakai" />
+                <TextBlock Classes="recipe-health-value warning"
+                           Text="{Binding JumlahBelumDipakai, StringFormat='{}{0:N0}'}" />
+              </StackPanel>
+            </Border>
+
+            <Border Classes="recipe-health-card">
+              <StackPanel>
+                <TextBlock Classes="card-title" Text="Data Master Bermasalah" />
+                <TextBlock Classes="recipe-health-value warning"
+                           Text="{Binding JumlahMasterTidakValid, StringFormat='{}{0:N0}'}" />
+              </StackPanel>
+            </Border>
+          </WrapPanel>
+
+          <TextBlock IsVisible="{Binding AdaMasalahResep}"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource WarningBrush}"
+                     Text="{Binding RingkasanKesehatan}" />
+          <TextBlock IsVisible="{Binding AdaMasalahResep, Converter={StaticResource InverseBooleanConverter}}"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource PositiveBrush}"
+                     Text="{Binding RingkasanKesehatan}" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Column="2" Classes="kpi-card" ToolTip.Tip="TotalTopping = SUM biaya topping aktif.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="3. Total Topping Aktif" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalTopping, Converter={StaticResource RupiahConverter}}" />
+      <Border Classes="section-panel" IsVisible="{Binding HasResepItems}">
+        <StackPanel Spacing="10">
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <TextBlock Classes="muted"
+                       Text="Perubahan jumlah bahan tersimpan otomatis. Gunakan reset jika ingin mulai hitung ulang varian aktif." />
+            <Button Grid.Column="1"
+                    Content="Reset Jumlah Dipakai"
+                    Command="{Binding ResetResepCommand}"
+                    Classes="ghost-button" />
+          </Grid>
+
+          <dg:DataGrid ItemsSource="{Binding FilteredResepItems}"
+                       SelectedItem="{Binding SelectedResepItem, Mode=TwoWay}"
+                       AutoGenerateColumns="False"
+                       GridLinesVisibility="Horizontal"
+                       IsReadOnly="False"
+                       HeadersVisibility="Column"
+                       MinHeight="450">
+            <dg:DataGrid.Columns>
+              <dg:DataGridTextColumn Width="2*" Binding="{Binding NamaBahan}" IsReadOnly="True">
+                <dg:DataGridTextColumn.Header>
+                  <TextBlock Text="Nama Bahan" />
+                </dg:DataGridTextColumn.Header>
+              </dg:DataGridTextColumn>
+
+              <dg:DataGridTextColumn Width="*" Binding="{Binding Satuan}" IsReadOnly="True">
+                <dg:DataGridTextColumn.Header>
+                  <TextBlock Text="Satuan" />
+                </dg:DataGridTextColumn.Header>
+              </dg:DataGridTextColumn>
+
+              <dg:DataGridTemplateColumn Width="*">
+                <dg:DataGridTemplateColumn.Header>
+                  <TextBlock Text="Jumlah Dipakai" />
+                </dg:DataGridTemplateColumn.Header>
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock VerticalAlignment="Center" Text="{Binding JumlahDipakai, StringFormat='{}{0:N2}'}" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+                <dg:DataGridTemplateColumn.CellEditingTemplate>
+                  <DataTemplate>
+                    <NumericUpDown Value="{Binding JumlahDipakai, Mode=TwoWay}"
+                                   Minimum="0"
+                                   Maximum="1000000"
+                                   Increment="1"
+                                   FormatString="N2" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellEditingTemplate>
+              </dg:DataGridTemplateColumn>
+
+              <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
+                <dg:DataGridTemplateColumn.Header>
+                  <TextBlock Text="Modal Bahan" />
+                </dg:DataGridTemplateColumn.Header>
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Text="{Binding ModalBahan, Converter={StaticResource RupiahConverter}}" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+
+              <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
+                <dg:DataGridTemplateColumn.Header>
+                  <TextBlock Text="Kontribusi" />
+                </dg:DataGridTemplateColumn.Header>
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock VerticalAlignment="Center" Text="{Binding KontribusiPersen, StringFormat='{}{0:N2}%'}" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+
+              <dg:DataGridTemplateColumn Width="*" IsReadOnly="True">
+                <dg:DataGridTemplateColumn.Header>
+                  <TextBlock Text="Validasi" />
+                </dg:DataGridTemplateColumn.Header>
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding ValidationMessage}"
+                               Foreground="{Binding ValidationMessage, Converter={StaticResource ValidationBrushConverter}}" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+            </dg:DataGrid.Columns>
+          </dg:DataGrid>
         </StackPanel>
       </Border>
 
-      <Border Grid.Column="3" Classes="kpi-card" ToolTip.Tip="HPPFinal = HPPDonat + TotalTopping.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="4. HPP Final Donat" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppFinal, Converter={StaticResource RupiahConverter}}" />
+      <Border Classes="section-panel"
+              IsVisible="{Binding HasResepItems, Converter={StaticResource InverseBooleanConverter}}">
+        <StackPanel Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,20">
+          <TextBlock FontSize="19" FontWeight="SemiBold" Text="Belum ada bahan untuk menyusun resep" />
+          <TextBlock Classes="muted"
+                     Text="Tambahkan bahan terlebih dahulu agar tabel resep, validasi, dan kalkulasi HPP bisa berjalan." />
+          <Button Content="+ Tambah Bahan Sekarang"
+                  Command="{Binding TambahBahanCepatCommand}"
+                  Classes="action-button" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Column="4" Classes="kpi-card" ToolTip.Tip="HPPSetelahWaste = TotalModalAdonan / ProduksiEfektif.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="5. HPP Setelah Waste" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppSetelahWaste, Converter={StaticResource RupiahConverter}}" />
-        </StackPanel>
-      </Border>
-    </Grid>
-  </StackPanel>
+      <WrapPanel Orientation="Horizontal" ItemWidth="220" ItemHeight="116">
+        <Border Classes="kpi-card recipe-kpi-card" ToolTip.Tip="TotalModalAdonan = SUM seluruh ModalBahan.">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="1. Total Modal Adonan" />
+            <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="kpi-card recipe-kpi-card" ToolTip.Tip="HPPDonat = TotalModalAdonan / JumlahDonatDihasilkan.">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="2. HPP Dasar Donat" />
+            <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppDonat, Converter={StaticResource RupiahConverter}}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="kpi-card recipe-kpi-card" ToolTip.Tip="TotalTopping = SUM biaya topping aktif.">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="3. Total Topping Aktif" />
+            <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalTopping, Converter={StaticResource RupiahConverter}}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="kpi-card recipe-kpi-card" ToolTip.Tip="HPPFinal = HPPDonat + TotalTopping.">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="4. HPP Final Donat" />
+            <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppFinal, Converter={StaticResource RupiahConverter}}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="kpi-card recipe-kpi-card" ToolTip.Tip="HPPSetelahWaste = TotalModalAdonan / ProduksiEfektif.">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="5. HPP Setelah Waste" />
+            <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppSetelahWaste, Converter={StaticResource RupiahConverter}}" />
+          </StackPanel>
+        </Border>
+      </WrapPanel>
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>
-

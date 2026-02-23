@@ -18,7 +18,7 @@ public sealed class ProduksiSettingRepository : IProduksiSettingRepository
 
         await using var queryCommand = connection.CreateCommand();
         queryCommand.CommandText = """
-            SELECT Id, JumlahDonatDihasilkan, WastePersen, TargetProfitPersen, HariProduksiPerBulan
+            SELECT Id, JumlahDonatDihasilkan, BeratPerDonat, WastePersen, TargetProfitPersen, HariProduksiPerBulan
             FROM ProduksiSetting
             WHERE Id = 1;
             """;
@@ -30,9 +30,10 @@ public sealed class ProduksiSettingRepository : IProduksiSettingRepository
             {
                 Id = reader.GetInt32(0),
                 JumlahDonatDihasilkan = reader.GetDecimal(1),
-                WastePersen = reader.GetDecimal(2),
-                TargetProfitPersen = reader.GetDecimal(3),
-                HariProduksiPerBulan = reader.GetInt32(4)
+                BeratPerDonat = reader.GetDecimal(2),
+                WastePersen = reader.GetDecimal(3),
+                TargetProfitPersen = reader.GetDecimal(4),
+                HariProduksiPerBulan = reader.GetInt32(5)
             };
         }
 
@@ -40,10 +41,11 @@ public sealed class ProduksiSettingRepository : IProduksiSettingRepository
 
         await using var insertCommand = connection.CreateCommand();
         insertCommand.CommandText = """
-            INSERT INTO ProduksiSetting (Id, JumlahDonatDihasilkan, WastePersen, TargetProfitPersen, HariProduksiPerBulan)
-            VALUES (1, $jumlahDonat, $waste, $targetProfit, $hariProduksi);
+            INSERT INTO ProduksiSetting (Id, JumlahDonatDihasilkan, BeratPerDonat, WastePersen, TargetProfitPersen, HariProduksiPerBulan)
+            VALUES (1, $jumlahDonat, $beratPerDonat, $waste, $targetProfit, $hariProduksi);
             """;
         insertCommand.Parameters.AddWithValue("$jumlahDonat", defaultSetting.JumlahDonatDihasilkan);
+        insertCommand.Parameters.AddWithValue("$beratPerDonat", defaultSetting.BeratPerDonat);
         insertCommand.Parameters.AddWithValue("$waste", defaultSetting.WastePersen);
         insertCommand.Parameters.AddWithValue("$targetProfit", defaultSetting.TargetProfitPersen);
         insertCommand.Parameters.AddWithValue("$hariProduksi", defaultSetting.HariProduksiPerBulan);
@@ -61,12 +63,14 @@ public sealed class ProduksiSettingRepository : IProduksiSettingRepository
         command.CommandText = """
             UPDATE ProduksiSetting
             SET JumlahDonatDihasilkan = $jumlahDonat,
+                BeratPerDonat = $beratPerDonat,
                 WastePersen = $waste,
                 TargetProfitPersen = $targetProfit,
                 HariProduksiPerBulan = $hariProduksi
             WHERE Id = 1;
             """;
         command.Parameters.AddWithValue("$jumlahDonat", setting.JumlahDonatDihasilkan);
+        command.Parameters.AddWithValue("$beratPerDonat", setting.BeratPerDonat);
         command.Parameters.AddWithValue("$waste", setting.WastePersen);
         command.Parameters.AddWithValue("$targetProfit", setting.TargetProfitPersen);
         command.Parameters.AddWithValue("$hariProduksi", setting.HariProduksiPerBulan);

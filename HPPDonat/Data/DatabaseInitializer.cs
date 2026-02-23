@@ -137,11 +137,17 @@ public sealed class DatabaseInitializer
             CREATE TABLE IF NOT EXISTS ProduksiSetting (
                 Id INTEGER PRIMARY KEY CHECK (Id = 1),
                 JumlahDonatDihasilkan REAL NOT NULL CHECK (JumlahDonatDihasilkan > 0),
+                BeratPerDonat REAL NOT NULL CHECK (BeratPerDonat > 0),
                 WastePersen REAL NOT NULL CHECK (WastePersen >= 0 AND WastePersen <= 99),
                 TargetProfitPersen REAL NOT NULL CHECK (TargetProfitPersen >= 1 AND TargetProfitPersen <= 95),
                 HariProduksiPerBulan INTEGER NOT NULL CHECK (HariProduksiPerBulan >= 1 AND HariProduksiPerBulan <= 31)
             );
             """);
+
+        if (!await ColumnExistsAsync(connection, "ProduksiSetting", "BeratPerDonat"))
+        {
+            await ExecuteNonQueryAsync(connection, "ALTER TABLE ProduksiSetting ADD COLUMN BeratPerDonat REAL NOT NULL DEFAULT 50;");
+        }
     }
 
     private static async Task NormalizeDataAsync(SqliteConnection connection)
@@ -170,6 +176,7 @@ public sealed class DatabaseInitializer
 
             UPDATE ProduksiSetting
             SET JumlahDonatDihasilkan = CASE WHEN JumlahDonatDihasilkan <= 0 THEN 1 ELSE JumlahDonatDihasilkan END,
+                BeratPerDonat = CASE WHEN BeratPerDonat <= 0 THEN 50 ELSE BeratPerDonat END,
                 WastePersen = CASE WHEN WastePersen < 0 THEN 0 WHEN WastePersen > 99 THEN 99 ELSE WastePersen END,
                 TargetProfitPersen = CASE WHEN TargetProfitPersen < 1 THEN 1 WHEN TargetProfitPersen > 95 THEN 95 ELSE TargetProfitPersen END,
                 HariProduksiPerBulan = CASE WHEN HariProduksiPerBulan < 1 THEN 1 WHEN HariProduksiPerBulan > 31 THEN 31 ELSE HariProduksiPerBulan END
@@ -248,14 +255,14 @@ public sealed class DatabaseInitializer
 
             CREATE TRIGGER trg_produksi_validate_insert
             BEFORE INSERT ON ProduksiSetting
-            WHEN NEW.JumlahDonatDihasilkan <= 0 OR NEW.WastePersen < 0 OR NEW.WastePersen > 99 OR NEW.TargetProfitPersen < 1 OR NEW.TargetProfitPersen > 95 OR NEW.HariProduksiPerBulan < 1 OR NEW.HariProduksiPerBulan > 31
+            WHEN NEW.JumlahDonatDihasilkan <= 0 OR NEW.BeratPerDonat <= 0 OR NEW.WastePersen < 0 OR NEW.WastePersen > 99 OR NEW.TargetProfitPersen < 1 OR NEW.TargetProfitPersen > 95 OR NEW.HariProduksiPerBulan < 1 OR NEW.HariProduksiPerBulan > 31
             BEGIN
                 SELECT RAISE(ABORT, 'Pengaturan produksi tidak valid');
             END;
 
             CREATE TRIGGER trg_produksi_validate_update
             BEFORE UPDATE ON ProduksiSetting
-            WHEN NEW.JumlahDonatDihasilkan <= 0 OR NEW.WastePersen < 0 OR NEW.WastePersen > 99 OR NEW.TargetProfitPersen < 1 OR NEW.TargetProfitPersen > 95 OR NEW.HariProduksiPerBulan < 1 OR NEW.HariProduksiPerBulan > 31
+            WHEN NEW.JumlahDonatDihasilkan <= 0 OR NEW.BeratPerDonat <= 0 OR NEW.WastePersen < 0 OR NEW.WastePersen > 99 OR NEW.TargetProfitPersen < 1 OR NEW.TargetProfitPersen > 95 OR NEW.HariProduksiPerBulan < 1 OR NEW.HariProduksiPerBulan > 31
             BEGIN
                 SELECT RAISE(ABORT, 'Pengaturan produksi tidak valid');
             END;

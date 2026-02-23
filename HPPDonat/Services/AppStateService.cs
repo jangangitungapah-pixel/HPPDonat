@@ -226,6 +226,41 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
         return TambahVarianResepAsync(nama, true);
     }
 
+    public async Task UbahNamaVarianResepAsync(ResepVarianModel? varian, string? namaBaru)
+    {
+        if (varian is null)
+        {
+            return;
+        }
+
+        var namaAwal = InputValidator.NormalizeName(varian.NamaVarian, "Varian");
+        var namaFinal = BuatNamaVarianUnik(InputValidator.NormalizeName(namaBaru, namaAwal), varian.Id);
+
+        if (string.Equals(varian.NamaVarian, namaFinal, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        await ExecuteImmediateWriteAsync(async () =>
+        {
+            await _resepVarianRepository.RenameAsync(varian.Id, namaFinal);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var targetVarian = ResepVarianItems.FirstOrDefault(item => item.Id == varian.Id);
+                if (targetVarian is not null)
+                {
+                    targetVarian.NamaVarian = namaFinal;
+                }
+
+                if (VarianAktif?.Id == varian.Id && VarianAktif is not null)
+                {
+                    VarianAktif.NamaVarian = namaFinal;
+                }
+            });
+        }, "Nama varian resep berhasil diperbarui.");
+    }
+
     public async Task HapusVarianResepAsync(ResepVarianModel? varian)
     {
         if (varian is null)
@@ -622,7 +657,7 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
             return;
         }
 
-        if (e.PropertyName is not (nameof(ProduksiSettingModel.JumlahDonatDihasilkan)
+        if (e.PropertyName is not (nameof(ProduksiSettingModel.BeratPerDonat)
             or nameof(ProduksiSettingModel.WastePersen)
             or nameof(ProduksiSettingModel.TargetProfitPersen)
             or nameof(ProduksiSettingModel.HariProduksiPerBulan)))
@@ -797,11 +832,13 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
     private bool NormalizeProduksiSetting(ProduksiSettingModel setting)
     {
         var newJumlah = InputValidator.ClampPositive(setting.JumlahDonatDihasilkan, 1m);
+        var newBeratPerDonat = InputValidator.ClampPositive(setting.BeratPerDonat, 1m);
         var newWaste = InputValidator.Clamp(setting.WastePersen, 0m, 99m);
         var newProfit = InputValidator.Clamp(setting.TargetProfitPersen, 1m, 95m);
         var newHari = InputValidator.Clamp(setting.HariProduksiPerBulan, 1, 31);
 
         if (newJumlah == setting.JumlahDonatDihasilkan
+            && newBeratPerDonat == setting.BeratPerDonat
             && newWaste == setting.WastePersen
             && newProfit == setting.TargetProfitPersen
             && newHari == setting.HariProduksiPerBulan)
@@ -811,6 +848,7 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
 
         _isNormalizing = true;
         setting.JumlahDonatDihasilkan = newJumlah;
+        setting.BeratPerDonat = newBeratPerDonat;
         setting.WastePersen = newWaste;
         setting.TargetProfitPersen = newProfit;
         setting.HariProduksiPerBulan = newHari;
@@ -831,6 +869,8 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
         }
 
         var totalModalAdonan = _costCalculationService.HitungTotalModalAdonan(ResepItems);
+        var totalBeratAdonan = ResepItems.Sum(item => InputValidator.ClampNonNegative(item.JumlahDipakai));
+        SinkronisasiJumlahDonatOtomatis(totalBeratAdonan);
 
         foreach (var resepItem in ResepItems)
         {
@@ -866,6 +906,26 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
         Calculation.EstimasiBulanan = estimasiBulanan;
     }
 
+    private void SinkronisasiJumlahDonatOtomatis(decimal totalBeratAdonan)
+    {
+        var beratPerDonat = InputValidator.ClampPositive(ProduksiSetting.BeratPerDonat, 1m);
+        var jumlahDonatOtomatis = totalBeratAdonan > 0m
+            ? Math.Round(totalBeratAdonan / beratPerDonat, 2, MidpointRounding.AwayFromZero)
+            : 1m;
+        jumlahDonatOtomatis = InputValidator.ClampPositive(jumlahDonatOtomatis, 1m);
+
+        if (ProduksiSetting.BeratPerDonat == beratPerDonat
+            && ProduksiSetting.JumlahDonatDihasilkan == jumlahDonatOtomatis)
+        {
+            return;
+        }
+
+        _isNormalizing = true;
+        ProduksiSetting.BeratPerDonat = beratPerDonat;
+        ProduksiSetting.JumlahDonatDihasilkan = jumlahDonatOtomatis;
+        _isNormalizing = false;
+    }
+
     private static string ValidateResepItem(ResepItemModel item)
     {
         if (item.NettoPerPack <= 0m)
@@ -886,12 +946,14 @@ public sealed class AppStateService : ReactiveObject, IAppStateService, IDisposa
         return "OK";
     }
 
-    private string BuatNamaVarianUnik(string baseName)
+    private string BuatNamaVarianUnik(string baseName, int? excludeVarianId = null)
     {
         var nama = baseName;
         var counter = 2;
 
-        while (ResepVarianItems.Any(v => string.Equals(v.NamaVarian, nama, StringComparison.OrdinalIgnoreCase)))
+        while (ResepVarianItems.Any(v =>
+                   v.Id != excludeVarianId
+                   && string.Equals(v.NamaVarian, nama, StringComparison.OrdinalIgnoreCase)))
         {
             nama = $"{baseName} ({counter})";
             counter++;
