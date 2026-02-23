@@ -5,6 +5,8 @@ namespace HPPDonat.ViewModels;
 
 public sealed class KalkulatorProduksiViewModel : ViewModelBase
 {
+    public override string Title => "Kalkulator Produksi";
+
     private readonly IAppStateService _appStateService;
 
     public KalkulatorProduksiViewModel(IAppStateService appStateService)

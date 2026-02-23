@@ -6,6 +6,7 @@ public sealed class BahanModel : ReactiveObject
 {
     private int _id;
     private string _namaBahan = string.Empty;
+    private string _satuan = "gram";
     private decimal _nettoPerPack = 1m;
     private decimal _hargaPerPack;
 
@@ -21,6 +22,12 @@ public sealed class BahanModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _namaBahan, value);
     }
 
+    public string Satuan
+    {
+        get => _satuan;
+        set => this.RaiseAndSetIfChanged(ref _satuan, value);
+    }
+
     public decimal NettoPerPack
     {
         get => _nettoPerPack;
@@ -33,4 +40,3 @@ public sealed class BahanModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _hargaPerPack, value);
     }
 }
-

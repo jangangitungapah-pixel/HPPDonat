@@ -5,56 +5,84 @@
              xmlns:viewModels="using:HPPDonat.ViewModels"
              xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
              mc:Ignorable="d"
-             d:DesignWidth="1024"
-             d:DesignHeight="720"
+             d:DesignWidth="1120"
+             d:DesignHeight="760"
              x:Class="HPPDonat.Views.ToppingView"
              x:DataType="viewModels:ToppingViewModel">
   <StackPanel Spacing="12">
-    <TextBlock Classes="section-title" Text="Manajemen Topping" />
+    <Border Classes="hero"
+            ToolTip.Tip="Hanya topping aktif yang ikut masuk ke HPP final.">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="section-title" Text="Manajemen Topping" />
+        <TextBlock Classes="muted"
+                   Text="Kelola variasi topping dan aktifkan/nonaktifkan untuk simulasi biaya secara realtime. Rumus: TotalTopping = SUM(BiayaPerDonat pada topping aktif)." />
+      </StackPanel>
+    </Border>
 
     <Border Classes="section-panel">
-      <StackPanel Orientation="Horizontal" Spacing="10">
+      <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="10">
         <Button Classes="action-button"
                 Content="+ Tambah Topping"
                 Command="{Binding TambahToppingCommand}"
-                ToolTip.Tip="Tambah topping baru beserta biaya per donat." />
-        <Button Classes="action-button"
-                Content="Hapus Topping Terpilih"
+                ToolTip.Tip="Tambah topping baru ke database." />
+        <Button Grid.Column="1"
+                Classes="ghost-button"
+                Content="Hapus Terpilih"
                 Command="{Binding HapusToppingCommand}"
-                ToolTip.Tip="Hapus topping yang dipilih dari database." />
-      </StackPanel>
+                ToolTip.Tip="Hapus topping yang sedang dipilih." />
+        <TextBlock Grid.Column="2"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Classes="muted"
+                   Text="Centang kolom Aktif untuk memasukkan biaya topping ke HPP." />
+      </Grid>
     </Border>
 
     <Border Classes="section-panel">
       <dg:DataGrid ItemsSource="{Binding ToppingItems}"
                    SelectedItem="{Binding SelectedTopping, Mode=TwoWay}"
                    AutoGenerateColumns="False"
-                   GridLinesVisibility="All"
+                   GridLinesVisibility="Horizontal"
                    IsReadOnly="False"
-                   MinHeight="390">
+                   HeadersVisibility="Column"
+                   MinHeight="470">
         <dg:DataGrid.Columns>
           <dg:DataGridTextColumn Width="2*" Binding="{Binding NamaTopping}">
             <dg:DataGridTextColumn.Header>
-              <TextBlock Text="Nama Topping" ToolTip.Tip="Nama variasi topping untuk donat." />
+              <TextBlock Text="Nama Topping" ToolTip.Tip="Nama variasi topping untuk produk donat." />
             </dg:DataGridTextColumn.Header>
           </dg:DataGridTextColumn>
 
-          <dg:DataGridTextColumn Width="*" Binding="{Binding BiayaPerDonat}">
-            <dg:DataGridTextColumn.Header>
-              <TextBlock Text="Biaya per Donat" ToolTip.Tip="Biaya tambahan topping untuk setiap donat." />
-            </dg:DataGridTextColumn.Header>
-          </dg:DataGridTextColumn>
+          <dg:DataGridTemplateColumn Width="*">
+            <dg:DataGridTemplateColumn.Header>
+              <TextBlock Text="Biaya per Donat" ToolTip.Tip="Biaya tambahan untuk satu donat dari topping ini." />
+            </dg:DataGridTemplateColumn.Header>
+            <dg:DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock VerticalAlignment="Center" Text="{Binding BiayaPerDonat, Converter={StaticResource RupiahConverter}}" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellTemplate>
+            <dg:DataGridTemplateColumn.CellEditingTemplate>
+              <DataTemplate>
+                <NumericUpDown Value="{Binding BiayaPerDonat, Mode=TwoWay}"
+                               Minimum="0"
+                               Maximum="1000000"
+                               Increment="100"
+                               FormatString="N0" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellEditingTemplate>
+          </dg:DataGridTemplateColumn>
 
           <dg:DataGridCheckBoxColumn Width="*" Binding="{Binding IsActive}">
             <dg:DataGridCheckBoxColumn.Header>
-              <TextBlock Text="Aktif" ToolTip.Tip="Jika aktif, biaya topping dihitung ke HPP final." />
+              <TextBlock Text="Aktif" ToolTip.Tip="Jika aktif, biaya topping ikut dihitung pada HPP final." />
             </dg:DataGridCheckBoxColumn.Header>
           </dg:DataGridCheckBoxColumn>
         </dg:DataGrid.Columns>
       </dg:DataGrid>
     </Border>
 
-    <Border Classes="card" ToolTip.Tip="TotalTopping = SUM biaya topping aktif.">
+    <Border Classes="kpi-card" ToolTip.Tip="TotalTopping = SUM semua topping aktif.">
       <StackPanel>
         <TextBlock Classes="card-title" Text="Total Biaya Topping Aktif" />
         <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalTopping, Converter={StaticResource RupiahConverter}}" />
@@ -62,4 +90,3 @@
     </Border>
   </StackPanel>
 </UserControl>
-

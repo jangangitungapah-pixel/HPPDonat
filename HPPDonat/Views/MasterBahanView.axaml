@@ -1,64 +1,286 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:HPPDonat.ViewModels"
-             xmlns:model="using:HPPDonat.Models"
              xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             xmlns:ic="using:FluentIcons.Avalonia"
              mc:Ignorable="d"
-             d:DesignWidth="1024"
-             d:DesignHeight="720"
+             d:DesignWidth="1160"
+             d:DesignHeight="780"
              x:Class="HPPDonat.Views.MasterBahanView"
+             x:Name="Root"
              x:DataType="viewModels:MasterBahanViewModel">
   <StackPanel Spacing="12">
-    <TextBlock Classes="section-title" Text="Master Bahan" />
+    <Border Classes="hero" ToolTip.Tip="Master bahan adalah sumber data utama seluruh perhitungan HPP donat.">
+      <Grid ColumnDefinitions="2.4*,*" ColumnSpacing="16">
+        <StackPanel Spacing="4">
+          <TextBlock Classes="section-title" Text="Master Bahan 100% Fungsional" />
+          <TextBlock Classes="muted"
+                     Text="Tambah bahan dengan form cepat, edit langsung via tabel, filter realtime, dan hapus per item. Semua perubahan tersimpan otomatis ke SQLite." />
+        </StackPanel>
 
-    <Border Classes="section-panel">
-      <StackPanel Orientation="Horizontal" Spacing="10">
-        <Button Classes="action-button"
-                Content="+ Tambah Bahan"
-                Command="{Binding TambahBahanCommand}"
-                ToolTip.Tip="Tambah baris bahan baru untuk data master." />
-        <Button Classes="action-button"
-                Content="Hapus Bahan Terpilih"
-                Command="{Binding HapusBahanCommand}"
-                ToolTip.Tip="Hapus bahan yang dipilih dari master dan resep." />
-      </StackPanel>
+        <Grid Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="10">
+          <Border Grid.Column="0"
+                  Padding="12"
+                  CornerRadius="12"
+                  Background="#22000000"
+                  BorderBrush="#22000000"
+                  BorderThickness="1"
+                  ToolTip.Tip="Jumlah total bahan dalam database master.">
+            <StackPanel>
+              <TextBlock Classes="card-title" Text="Total Master" />
+              <TextBlock FontSize="28"
+                         FontWeight="Bold"
+                         Foreground="{DynamicResource AccentStrongBrush}"
+                         Text="{Binding JumlahBahanMaster}" />
+            </StackPanel>
+          </Border>
+
+          <Border Grid.Column="1"
+                  Padding="12"
+                  CornerRadius="12"
+                  Background="#22000000"
+                  BorderBrush="#22000000"
+                  BorderThickness="1"
+                  ToolTip.Tip="Jumlah bahan yang sedang tampil sesuai filter.">
+            <StackPanel>
+              <TextBlock Classes="card-title" Text="Sedang Ditampilkan" />
+              <TextBlock FontSize="28"
+                         FontWeight="Bold"
+                         Foreground="{DynamicResource AccentStrongBrush}"
+                         Text="{Binding JumlahBahanDitampilkan}" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Grid>
     </Border>
 
     <Border Classes="section-panel">
-      <StackPanel Spacing="10">
-        <TextBlock Text="Ubah data langsung di grid. Semua perubahan otomatis disimpan ke database SQLite."
-                   ToolTip.Tip="NettoPerPack = berat bersih bahan dalam satu kemasan." />
+      <Grid ColumnDefinitions="2.4*,1.2*,Auto,Auto" ColumnSpacing="10" VerticalAlignment="Center">
+        <Border Padding="10"
+                CornerRadius="10"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource CardBorderBrush}"
+                Background="{DynamicResource CardBackgroundBrush}"
+                ToolTip.Tip="Cari berdasarkan NamaBahan atau Satuan.">
+          <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+            <ic:SymbolIcon Symbol="Search" VerticalAlignment="Center" FontSize="15" />
+            <TextBox Grid.Column="1"
+                     Watermark="Cari bahan: tepung, gula, ragi..."
+                     Text="{Binding KataKunciFilter, Mode=TwoWay}" />
+          </Grid>
+        </Border>
 
-        <dg:DataGrid ItemsSource="{Binding BahanItems}"
-                     SelectedItem="{Binding SelectedBahan, Mode=TwoWay}"
-                     AutoGenerateColumns="False"
-                     GridLinesVisibility="All"
-                     IsReadOnly="False"
-                     MinHeight="420">
-          <dg:DataGrid.Columns>
-            <dg:DataGridTextColumn Width="2*" Binding="{Binding NamaBahan}">
-              <dg:DataGridTextColumn.Header>
-                <TextBlock Text="Nama Bahan" ToolTip.Tip="Nama bahan baku yang digunakan dalam produksi." />
-              </dg:DataGridTextColumn.Header>
-            </dg:DataGridTextColumn>
+        <ComboBox Grid.Column="1"
+                  ItemsSource="{Binding FilterSatuanOptions}"
+                  SelectedItem="{Binding FilterSatuan, Mode=TwoWay}"
+                  ToolTip.Tip="Filter bahan berdasarkan satuan." />
 
-            <dg:DataGridTextColumn Width="*" Binding="{Binding NettoPerPack}">
-              <dg:DataGridTextColumn.Header>
-                <TextBlock Text="Netto per Pack" ToolTip.Tip="NettoPerPack = berat bersih bahan dalam satu kemasan." />
-              </dg:DataGridTextColumn.Header>
-            </dg:DataGridTextColumn>
+        <Button Grid.Column="2"
+                Classes="ghost-button"
+                Command="{Binding ClearFilterCommand}"
+                ToolTip.Tip="Reset filter pencarian dan filter satuan.">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <ic:SymbolIcon Symbol="Dismiss" FontSize="14" />
+            <TextBlock Text="Reset Filter" />
+          </StackPanel>
+        </Button>
 
-            <dg:DataGridTextColumn Width="*" Binding="{Binding HargaPerPack}">
-              <dg:DataGridTextColumn.Header>
-                <TextBlock Text="Harga per Pack" ToolTip.Tip="HargaPerPack = harga beli satu kemasan bahan." />
-              </dg:DataGridTextColumn.Header>
-            </dg:DataGridTextColumn>
-          </dg:DataGrid.Columns>
-        </dg:DataGrid>
+        <Button Grid.Column="3"
+                Classes="ghost-button"
+                Command="{Binding HapusBahanCommand}"
+                ToolTip.Tip="Hapus bahan yang sedang dipilih pada tabel.">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <ic:SymbolIcon Symbol="Delete" FontSize="14" />
+            <TextBlock Text="Hapus Terpilih" />
+          </StackPanel>
+        </Button>
+      </Grid>
+    </Border>
+
+    <Border Classes="section-panel">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="card-title" Text="Tambah Bahan Baru" />
+        <Grid ColumnDefinitions="2.2*,1*,1.2*,1.2*,Auto,Auto" ColumnSpacing="10">
+          <TextBox Text="{Binding NamaBahanBaru, Mode=TwoWay}"
+                   Watermark="Nama bahan (contoh: Tepung Protein Sedang)"
+                   ToolTip.Tip="NamaBahan = nama bahan yang digunakan pada resep." />
+
+          <ComboBox Grid.Column="1"
+                    ItemsSource="{Binding SatuanOptions}"
+                    SelectedItem="{Binding SatuanBahanBaru, Mode=TwoWay}"
+                    ToolTip.Tip="Satuan bahan (gram, kg, ml, butir, dan lain-lain)." />
+
+          <NumericUpDown Grid.Column="2"
+                         Value="{Binding NettoPerPackBaru, Mode=TwoWay}"
+                         Minimum="1"
+                         Maximum="1000000"
+                         Increment="1"
+                         FormatString="N2"
+                         ToolTip.Tip="NettoPerPack = berat/isi bersih dalam 1 kemasan." />
+
+          <NumericUpDown Grid.Column="3"
+                         Value="{Binding HargaPerPackBaru, Mode=TwoWay}"
+                         Minimum="0"
+                         Maximum="1000000000"
+                         Increment="100"
+                         FormatString="N0"
+                         ToolTip.Tip="HargaPerPack = harga beli satu kemasan bahan." />
+
+          <Button Grid.Column="4"
+                  Classes="action-button"
+                  Command="{Binding TambahBahanCommand}"
+                  ToolTip.Tip="Tambah item bahan baru ke master dan resep aktif.">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <ic:SymbolIcon Symbol="Add" FontSize="14" />
+              <TextBlock Text="Tambah Item" />
+            </StackPanel>
+          </Button>
+
+          <Button Grid.Column="5"
+                  Classes="ghost-button"
+                  Command="{Binding ResetFormCommand}"
+                  ToolTip.Tip="Kosongkan input form tambah bahan.">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <ic:SymbolIcon Symbol="ArrowSync" FontSize="14" />
+              <TextBlock Text="Reset Form" />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+      <Border Grid.Column="0" Classes="kpi-card" ToolTip.Tip="Rata-rata harga per pack dari seluruh bahan di master.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Rata-rata Harga/Pack" />
+          <TextBlock Classes="card-value"
+                     FontSize="24"
+                     Text="{Binding RataHargaPerPack, Converter={StaticResource RupiahConverter}}" />
+        </StackPanel>
+      </Border>
+
+      <Border Grid.Column="1" Classes="kpi-card" ToolTip.Tip="Rata-rata netto per pack dari seluruh bahan di master.">
+        <StackPanel>
+          <TextBlock Classes="card-title" Text="Rata-rata Netto/Pack" />
+          <TextBlock Classes="card-value" FontSize="24" Text="{Binding RataNettoPerPack, StringFormat='{}{0:N2}'}" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <Border Classes="section-panel" IsVisible="{Binding HasFilteredItems}">
+      <dg:DataGrid ItemsSource="{Binding FilteredBahanItems}"
+                   SelectedItem="{Binding SelectedBahan, Mode=TwoWay}"
+                   AutoGenerateColumns="False"
+                   GridLinesVisibility="Horizontal"
+                   IsReadOnly="False"
+                   HeadersVisibility="Column"
+                   MinHeight="470">
+        <dg:DataGrid.Columns>
+          <dg:DataGridTextColumn Width="2.2*" Binding="{Binding NamaBahan}">
+            <dg:DataGridTextColumn.Header>
+              <TextBlock Text="Nama Bahan" ToolTip.Tip="Nama bahan baku yang digunakan pada produksi donat." />
+            </dg:DataGridTextColumn.Header>
+          </dg:DataGridTextColumn>
+
+          <dg:DataGridTemplateColumn Width="*">
+            <dg:DataGridTemplateColumn.Header>
+              <TextBlock Text="Satuan" ToolTip.Tip="Satuan bahan, contoh: gram, ml, pcs." />
+            </dg:DataGridTemplateColumn.Header>
+            <dg:DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Satuan}" VerticalAlignment="Center" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellTemplate>
+            <dg:DataGridTemplateColumn.CellEditingTemplate>
+              <DataTemplate>
+                <ComboBox SelectedItem="{Binding Satuan, Mode=TwoWay}"
+                          ItemsSource="{Binding DataContext.SatuanOptions, ElementName=Root}" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellEditingTemplate>
+          </dg:DataGridTemplateColumn>
+
+          <dg:DataGridTemplateColumn Width="*">
+            <dg:DataGridTemplateColumn.Header>
+              <TextBlock Text="Netto per Pack" ToolTip.Tip="NettoPerPack = berat/isi bersih bahan per kemasan." />
+            </dg:DataGridTemplateColumn.Header>
+            <dg:DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding NettoPerPack, StringFormat='{}{0:N2}'}" VerticalAlignment="Center" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellTemplate>
+            <dg:DataGridTemplateColumn.CellEditingTemplate>
+              <DataTemplate>
+                <NumericUpDown Value="{Binding NettoPerPack, Mode=TwoWay}"
+                               Minimum="1"
+                               Maximum="1000000"
+                               Increment="1"
+                               FormatString="N2" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellEditingTemplate>
+          </dg:DataGridTemplateColumn>
+
+          <dg:DataGridTemplateColumn Width="*">
+            <dg:DataGridTemplateColumn.Header>
+              <TextBlock Text="Harga per Pack" ToolTip.Tip="HargaPerPack = harga beli satu kemasan bahan." />
+            </dg:DataGridTemplateColumn.Header>
+            <dg:DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding HargaPerPack, Converter={StaticResource RupiahConverter}}" VerticalAlignment="Center" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellTemplate>
+            <dg:DataGridTemplateColumn.CellEditingTemplate>
+              <DataTemplate>
+                <NumericUpDown Value="{Binding HargaPerPack, Mode=TwoWay}"
+                               Minimum="0"
+                               Maximum="1000000000"
+                               Increment="100"
+                               FormatString="N0" />
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellEditingTemplate>
+          </dg:DataGridTemplateColumn>
+
+          <dg:DataGridTemplateColumn Width="150" IsReadOnly="True">
+            <dg:DataGridTemplateColumn.Header>
+              <TextBlock Text="Aksi" ToolTip.Tip="Aksi cepat per item: isi form atau hapus bahan." />
+            </dg:DataGridTemplateColumn.Header>
+            <dg:DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                  <Button Classes="mini-icon-button"
+                          Command="{Binding DataContext.IsiFormDariBahanCommand, ElementName=Root}"
+                          CommandParameter="{Binding}"
+                          ToolTip.Tip="Isi data item ini ke form atas untuk duplikasi/edit cepat.">
+                    <ic:SymbolIcon Symbol="Edit" FontSize="13" />
+                  </Button>
+
+                  <Button Classes="mini-icon-button"
+                          Command="{Binding DataContext.HapusBahanItemCommand, ElementName=Root}"
+                          CommandParameter="{Binding}"
+                          ToolTip.Tip="Hapus item bahan ini dari master dan resep.">
+                    <ic:SymbolIcon Symbol="Delete" FontSize="13" />
+                  </Button>
+                </StackPanel>
+              </DataTemplate>
+            </dg:DataGridTemplateColumn.CellTemplate>
+          </dg:DataGridTemplateColumn>
+        </dg:DataGrid.Columns>
+      </dg:DataGrid>
+    </Border>
+
+    <Border Classes="section-panel" IsVisible="{Binding HasFilteredItems, Converter={StaticResource InverseBooleanConverter}}">
+      <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,20">
+        <ic:SymbolIcon Symbol="SearchInfo" FontSize="30" HorizontalAlignment="Center" />
+        <TextBlock FontSize="18" FontWeight="SemiBold" Text="Tidak ada bahan yang cocok dengan filter" />
+        <TextBlock Classes="muted" Text="Ubah kata kunci/filter satuan atau reset filter untuk melihat semua data." />
+        <Button Classes="ghost-button" Command="{Binding ClearFilterCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <ic:SymbolIcon Symbol="Dismiss" FontSize="14" />
+            <TextBlock Text="Reset Filter" />
+          </StackPanel>
+        </Button>
       </StackPanel>
     </Border>
   </StackPanel>
 </UserControl>
-

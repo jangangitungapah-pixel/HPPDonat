@@ -4,12 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:HPPDonat.ViewModels"
              mc:Ignorable="d"
-             d:DesignWidth="1024"
-             d:DesignHeight="720"
+             d:DesignWidth="1120"
+             d:DesignHeight="760"
              x:Class="HPPDonat.Views.AnalisaProfitView"
              x:DataType="viewModels:AnalisaProfitViewModel">
   <StackPanel Spacing="12">
-    <TextBlock Classes="section-title" Text="Analisa Profit" />
+    <Border Classes="hero"
+            ToolTip.Tip="Simulasi ini tidak mengubah data produksi utama. Hanya untuk analisa skenario.">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="section-title" Text="Analisa Profit Dinamis" />
+        <TextBlock Classes="muted"
+                   Text="Bandingkan dampak perubahan target profit dan waste terhadap harga jual, laba per donat, serta profit total usaha." />
+      </StackPanel>
+    </Border>
 
     <Border Classes="section-panel">
       <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
@@ -19,7 +26,8 @@
                          Minimum="1"
                          Maximum="95"
                          Increment="1"
-                         ToolTip.Tip="Ubah target profit untuk melihat dampak ke harga jual dan laba." />
+                         FormatString="N2"
+                         ToolTip.Tip="Ubah target profit untuk melihat dampaknya ke harga jual dan laba." />
         </StackPanel>
 
         <StackPanel Spacing="6">
@@ -28,41 +36,42 @@
                          Minimum="0"
                          Maximum="99"
                          Increment="0.5"
-                         ToolTip.Tip="Ubah waste untuk melihat dampak ke produksi efektif dan total laba." />
+                         FormatString="N2"
+                         ToolTip.Tip="Ubah waste untuk melihat penurunan produksi efektif dan total laba." />
         </StackPanel>
       </Grid>
     </Border>
 
-    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
-      <Border Grid.Row="0" Grid.Column="0" Classes="card" ToolTip.Tip="Produksi efektif hasil simulasi waste.">
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="10">
+      <Border Grid.Row="0" Grid.Column="0" Classes="kpi-card" ToolTip.Tip="Produksi efektif hasil skenario waste.">
         <StackPanel>
           <TextBlock Classes="card-title" Text="Produksi Efektif Simulasi" />
           <TextBlock Classes="card-value" Text="{Binding SimulasiProduksiEfektif, StringFormat='{}{0:N0} donat'}" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="0" Grid.Column="1" Classes="card" ToolTip.Tip="Harga jual simulasi mengikuti pembulatan ke atas kelipatan Rp100.">
+      <Border Grid.Row="0" Grid.Column="1" Classes="kpi-card" ToolTip.Tip="Harga jual simulasi dengan pembulatan kelipatan Rp100.">
         <StackPanel>
           <TextBlock Classes="card-title" Text="Harga Jual Simulasi" />
           <TextBlock Classes="card-value" Text="{Binding SimulasiHargaJual, Converter={StaticResource RupiahConverter}}" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="1" Grid.Column="0" Classes="card" ToolTip.Tip="Laba per donat pada skenario simulasi.">
+      <Border Grid.Row="0" Grid.Column="2" Classes="kpi-card" ToolTip.Tip="Laba per donat hasil skenario aktif.">
         <StackPanel>
-          <TextBlock Classes="card-title" Text="Profit per Donat Simulasi" />
+          <TextBlock Classes="card-title" Text="Laba per Donat" />
           <TextBlock Classes="card-value" Text="{Binding SimulasiProfitPerDonat, Converter={StaticResource RupiahConverter}}" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="1" Grid.Column="1" Classes="card" ToolTip.Tip="Laba batch berdasarkan skenario simulasi.">
+      <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Classes="kpi-card" ToolTip.Tip="Total laba per batch untuk skenario simulasi.">
         <StackPanel>
           <TextBlock Classes="card-title" Text="Profit Batch Simulasi" />
           <TextBlock Classes="card-value" Text="{Binding SimulasiTotalProfit, Converter={StaticResource RupiahConverter}}" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="card" ToolTip.Tip="Estimasi profit bulanan hasil simulasi.">
+      <Border Grid.Row="1" Grid.Column="2" Classes="kpi-card" ToolTip.Tip="Estimasi laba bulanan pada skenario simulasi saat ini.">
         <StackPanel>
           <TextBlock Classes="card-title" Text="Profit Bulanan Simulasi" />
           <TextBlock Classes="card-value" Text="{Binding SimulasiProfitBulanan, Converter={StaticResource RupiahConverter}}" />
@@ -71,4 +80,3 @@
     </Grid>
   </StackPanel>
 </UserControl>
-

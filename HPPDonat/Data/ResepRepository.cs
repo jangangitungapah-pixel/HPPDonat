@@ -19,7 +19,7 @@ public sealed class ResepRepository : IResepRepository
         await connection.OpenAsync();
 
         await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT Id, BahanId, JumlahDipakai FROM Resep ORDER BY Id";
+        command.CommandText = "SELECT Id, BahanId, VarianId, JumlahDipakai FROM Resep ORDER BY VarianId, Id";
 
         await using var reader = await command.ExecuteReaderAsync();
         while (await reader.ReadAsync())
@@ -28,7 +28,34 @@ public sealed class ResepRepository : IResepRepository
             {
                 Id = reader.GetInt32(0),
                 BahanId = reader.GetInt32(1),
-                JumlahDipakai = reader.GetDecimal(2)
+                VarianId = reader.GetInt32(2),
+                JumlahDipakai = reader.GetDecimal(3)
+            });
+        }
+
+        return list;
+    }
+
+    public async Task<IReadOnlyList<ResepModel>> GetByVarianAsync(int varianId)
+    {
+        var list = new List<ResepModel>();
+
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT Id, BahanId, VarianId, JumlahDipakai FROM Resep WHERE VarianId = $varianId ORDER BY Id";
+        command.Parameters.AddWithValue("$varianId", varianId);
+
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            list.Add(new ResepModel
+            {
+                Id = reader.GetInt32(0),
+                BahanId = reader.GetInt32(1),
+                VarianId = reader.GetInt32(2),
+                JumlahDipakai = reader.GetDecimal(3)
             });
         }
 
@@ -42,11 +69,12 @@ public sealed class ResepRepository : IResepRepository
 
         await using var command = connection.CreateCommand();
         command.CommandText = """
-            INSERT INTO Resep (BahanId, JumlahDipakai)
-            VALUES ($bahanId, $jumlahDipakai);
+            INSERT INTO Resep (BahanId, VarianId, JumlahDipakai)
+            VALUES ($bahanId, $varianId, $jumlahDipakai);
             SELECT last_insert_rowid();
             """;
         command.Parameters.AddWithValue("$bahanId", resep.BahanId);
+        command.Parameters.AddWithValue("$varianId", resep.VarianId);
         command.Parameters.AddWithValue("$jumlahDipakai", resep.JumlahDipakai);
 
         var id = (long)(await command.ExecuteScalarAsync() ?? 0L);
@@ -76,5 +104,15 @@ public sealed class ResepRepository : IResepRepository
         command.Parameters.AddWithValue("$bahanId", bahanId);
         await command.ExecuteNonQueryAsync();
     }
-}
 
+    public async Task ResetByVarianAsync(int varianId)
+    {
+        await using var connection = _connectionFactory.CreateConnection();
+        await connection.OpenAsync();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Resep SET JumlahDipakai = 0 WHERE VarianId = $varianId";
+        command.Parameters.AddWithValue("$varianId", varianId);
+        await command.ExecuteNonQueryAsync();
+    }
+}

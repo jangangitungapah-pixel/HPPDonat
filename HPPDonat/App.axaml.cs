@@ -36,6 +36,14 @@ public partial class App : Application
             {
                 DataContext = Services.GetRequiredService<MainWindowViewModel>()
             };
+
+            desktop.Exit += (_, _) =>
+            {
+                if (Services is IDisposable disposableServices)
+                {
+                    disposableServices.Dispose();
+                }
+            };
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -48,15 +56,19 @@ public partial class App : Application
 
         services.AddSingleton<IBahanRepository, BahanRepository>();
         services.AddSingleton<IResepRepository, ResepRepository>();
+        services.AddSingleton<IResepVarianRepository, ResepVarianRepository>();
         services.AddSingleton<IToppingRepository, ToppingRepository>();
         services.AddSingleton<IProduksiSettingRepository, ProduksiSettingRepository>();
+        services.AddSingleton<IProductionDataCoordinator, ProductionDataCoordinator>();
 
         services.AddSingleton<IRoundingService, RoundingService>();
         services.AddSingleton<ICostCalculationService, CostCalculationService>();
         services.AddSingleton<IProductionCalculationService, ProductionCalculationService>();
         services.AddSingleton<IProfitService, ProfitService>();
         services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<IUserDialogService, UserDialogService>();
         services.AddSingleton<IAppStateService, AppStateService>();
+        services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<MasterBahanViewModel>();

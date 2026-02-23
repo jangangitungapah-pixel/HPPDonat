@@ -1,93 +1,240 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="using:HPPDonat.ViewModels"
+        xmlns:models="using:HPPDonat.Models"
+        xmlns:fi="using:FluentIcons.Avalonia"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+        xmlns:lottie="using:Avalonia.Labs.Lottie"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
         mc:Ignorable="d"
-        d:DesignWidth="1400"
-        d:DesignHeight="860"
+        d:DesignWidth="1440"
+        d:DesignHeight="900"
         x:Class="HPPDonat.Views.MainWindow"
         x:DataType="viewModels:MainWindowViewModel"
         Title="HPP Donat Calculator"
         MinWidth="1120"
         MinHeight="720"
-        Width="1400"
-        Height="860">
-  <Grid ColumnDefinitions="250,*">
-    <Border Grid.Column="0" Classes="sidebar">
-      <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*,Auto">
-        <TextBlock Grid.Row="0"
-                   FontSize="22"
-                   FontWeight="Bold"
-                   Text="{Binding NamaAplikasi}"
-                   Margin="0,0,0,18"
-                   TextWrapping="Wrap" />
+        Width="1440"
+        Height="900"
+        WindowStartupLocation="CenterScreen">
 
-        <Button Grid.Row="1"
-                Classes="sidebar-button"
-                Content="Dashboard"
-                Command="{Binding NavigateCommand}"
-                CommandParameter="Dashboard"
-                ToolTip.Tip="Ringkasan total modal, HPP final, harga jual, dan profit." />
+  <Grid ColumnDefinitions="300,*">
+    <Border Grid.Column="0" Classes="sidebar main-shell-sidebar">
+      <Grid RowDefinitions="Auto,*,Auto">
+        <Border Grid.Row="0" Classes="main-shell-brand">
+          <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <Border Classes="main-shell-logo-wrap">
+              <materialIcons:MaterialIcon Kind="Refresh"
+                                          Foreground="{DynamicResource AccentBrush}"
+                                          Width="24"
+                                          Height="24"
+                                          Animation="Spin" />
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="2">
+              <TextBlock Text="HPP Donat" Classes="main-shell-brand-title" />
+              <TextBlock Text="Mega Control Center" Classes="main-shell-brand-subtitle" />
+            </StackPanel>
+          </Grid>
+        </Border>
 
-        <Button Grid.Row="2"
-                Classes="sidebar-button"
-                Content="Master Bahan"
-                Command="{Binding NavigateCommand}"
-                CommandParameter="MasterBahan"
-                ToolTip.Tip="Kelola data master bahan baku donat." />
+        <ListBox Grid.Row="1"
+                 ItemsSource="{Binding NavigationItems}"
+                 SelectedItem="{Binding SelectedNavigationItem}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Padding="12,0">
+          <ListBox.Styles>
+            <Style Selector="ListBoxItem">
+              <Setter Property="Padding" Value="12,10" />
+              <Setter Property="CornerRadius" Value="8" />
+              <Setter Property="Margin" Value="0,2" />
+              <Setter Property="Background" Value="Transparent" />
+              <Setter Property="Foreground" Value="{DynamicResource SidebarMutedTextBrush}" />
+              <Setter Property="Template">
+                <ControlTemplate>
+                  <Border Name="PART_Border"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          CornerRadius="{TemplateBinding CornerRadius}"
+                          Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                  </Border>
+                </ControlTemplate>
+              </Setter>
+            </Style>
 
-        <Button Grid.Row="3"
-                Classes="sidebar-button"
-                Content="Resep Produksi"
-                Command="{Binding NavigateCommand}"
-                CommandParameter="Resep"
-                ToolTip.Tip="Atur jumlah bahan yang dipakai per batch produksi." />
+            <Style Selector="ListBoxItem:pointerover /template/ Border#PART_Border">
+              <Setter Property="Background" Value="#1AFFFFFF" />
+              <Setter Property="Cursor" Value="Hand" />
+            </Style>
 
-        <Button Grid.Row="4"
-                Classes="sidebar-button"
-                Content="Manajemen Topping"
-                Command="{Binding NavigateCommand}"
-                CommandParameter="Topping"
-                ToolTip.Tip="Atur topping aktif dan biaya topping per donat." />
+            <Style Selector="ListBoxItem:selected">
+              <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+              <Setter Property="Foreground" Value="White" />
+            </Style>
 
-        <Button Grid.Row="5"
-                Classes="sidebar-button"
-                Content="Kalkulator Produksi"
-                Command="{Binding NavigateCommand}"
-                CommandParameter="Kalkulator"
-                ToolTip.Tip="Input jumlah donat, waste, dan target profit untuk simulasi harga jual." />
+            <Style Selector="ListBoxItem:selected /template/ Border#PART_Border">
+              <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            </Style>
+          </ListBox.Styles>
 
-        <Button Grid.Row="6"
-                VerticalAlignment="Top"
-                Classes="sidebar-button"
-                Content="Analisa Profit"
-                Command="{Binding NavigateCommand}"
-                CommandParameter="Analisa"
-                ToolTip.Tip="Simulasi skenario profit untuk evaluasi bisnis." />
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="models:NavigationItem">
+              <Grid ColumnDefinitions="Auto,*" ToolTip.Tip="{Binding ToolTip}">
+                <fi:SymbolIcon Grid.Column="0" Symbol="{Binding Icon}" FontSize="20" Margin="0,0,12,0" />
+                <TextBlock Grid.Column="1" Text="{Binding Label}" VerticalAlignment="Center" FontWeight="SemiBold" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
 
-        <StackPanel Grid.Row="7" Spacing="6">
-          <TextBlock Text="Mode Tema" FontWeight="SemiBold" />
-          <ToggleSwitch IsChecked="{Binding IsDarkMode}"
-                        OnContent="Gelap"
-                        OffContent="Terang"
-                        ToolTip.Tip="Aktifkan mode gelap atau mode terang." />
+        <StackPanel Grid.Row="2" Margin="16,12,16,20" Spacing="10">
+          <Border Classes="main-shell-side-card">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Spacing="2">
+                <TextBlock Text="Mode Gelap" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource SidebarTextBrush}" />
+                <TextBlock Text="Tema instant untuk workspace panjang" FontSize="11" Foreground="{DynamicResource SidebarMutedTextBrush}" />
+              </StackPanel>
+              <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsDarkMode}" OnContent="" OffContent="" />
+            </Grid>
+          </Border>
+
+          <Border Classes="main-shell-side-card">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <fi:SymbolIcon Symbol="CalendarCheckmark" Foreground="{DynamicResource SidebarTextBrush}" />
+              <TextBlock Text="{Binding Status.Message}" Foreground="{DynamicResource SidebarTextBrush}" FontSize="12" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+
+          <TextBlock Text="v3.0 - Hyper Dashboard"
+                     FontSize="11"
+                     Foreground="{DynamicResource SidebarMutedTextBrush}"
+                     Margin="6,0,0,0"
+                     Opacity="0.7" />
         </StackPanel>
       </Grid>
     </Border>
 
-    <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="22">
-      <Border Classes="card" Padding="14,10" Margin="0,0,0,14">
-        <TextBlock FontSize="22"
-                   FontWeight="SemiBold"
-                   Text="{Binding JudulHalaman}"
-                   ToolTip.Tip="Halaman aktif yang sedang Anda gunakan." />
+    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" Margin="22,20,24,22">
+      <Border Grid.Row="0" Classes="main-shell-hero" Margin="0,0,0,14">
+        <Grid ColumnDefinitions="1.3*,1*" ColumnSpacing="18">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="4">
+              <TextBlock FontSize="13" Classes="muted" Text="{Binding SelectedNavigationItem.Label, StringFormat='Control Route / {0}'}" />
+              <TextBlock Text="{Binding JudulHalaman}" Classes="main-shell-title" />
+              <TextBlock Text="Satu layar untuk kendali produksi, margin, dan status operasional." Classes="main-shell-subtitle" />
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+              <Border Classes="main-shell-chip">
+                <StackPanel Spacing="2">
+                  <TextBlock Text="Harga Jual" Classes="main-shell-chip-label" />
+                  <TextBlock Text="{Binding Ringkasan.HargaJual, Converter={StaticResource RupiahConverter}}" Classes="main-shell-chip-value" />
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="1" Classes="main-shell-chip">
+                <StackPanel Spacing="2">
+                  <TextBlock Text="Output Efektif" Classes="main-shell-chip-label" />
+                  <TextBlock Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} pcs'}" Classes="main-shell-chip-value" />
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="2" Classes="main-shell-chip">
+                <StackPanel Spacing="2">
+                  <TextBlock Text="Profit Harian" Classes="main-shell-chip-label" />
+                  <TextBlock Text="{Binding Ringkasan.EstimasiHarian, Converter={StaticResource RupiahConverter}}" Classes="main-shell-chip-value positive" />
+                </StackPanel>
+              </Border>
+            </Grid>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+              <Border Classes="main-shell-kicker">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <fi:SymbolIcon Symbol="Target" Width="14" Height="14" />
+                  <TextBlock Text="{Binding ProduksiSetting.TargetProfitPersen, StringFormat='Target {0}%'}" FontSize="12" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="1" Classes="main-shell-kicker">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <fi:SymbolIcon Symbol="BuildingFactory" Width="14" Height="14" />
+                  <TextBlock Text="{Binding ProduksiSetting.WastePersen, StringFormat='Waste {0}%'}" FontSize="12" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="2" Classes="main-shell-kicker">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <fi:SymbolIcon Symbol="CalendarMonth" Width="14" Height="14" />
+                  <TextBlock Text="{Binding ProduksiSetting.HariProduksiPerBulan, StringFormat='{}{0} hari'}" FontSize="12" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+            </Grid>
+          </StackPanel>
+
+          <Grid Grid.Column="1" RowDefinitions="Auto,*" RowSpacing="10">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+              <Border Classes="main-shell-lottie-frame">
+                <lottie:Lottie Path="avares://HPPDonat/Assets/Lottie/donut-pulse.json"
+                               AutoPlay="True"
+                               RepeatCount="9999"
+                               PlayBackRate="1"
+                               Width="120"
+                               Height="84"
+                               Stretch="Uniform" />
+              </Border>
+              <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                <TextBlock Text="System Pulse" Classes="main-shell-chip-label" />
+                <TextBlock Text="{Binding Status.Message}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource AccentStrongBrush}" TextWrapping="Wrap" />
+              </StackPanel>
+              <fa:ProgressRing Grid.Column="2"
+                               IsActive="{Binding Status.IsBusy}"
+                               Width="24"
+                               Height="24"
+                               Foreground="{DynamicResource AccentBrush}"
+                               VerticalAlignment="Center" />
+            </Grid>
+
+            <Border Grid.Row="1" Classes="main-shell-chart-wrap">
+              <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                <TextBlock Text="Profit Momentum" Classes="main-shell-chip-label" />
+                <lvc:CartesianChart Grid.Row="1"
+                                    Series="{Binding TrendSeries}"
+                                    XAxes="{Binding TrendXAxes}"
+                                    YAxes="{Binding TrendYAxes}"
+                                    LegendPosition="Hidden"
+                                    ZoomMode="None" />
+              </Grid>
+            </Border>
+          </Grid>
+        </Grid>
       </Border>
 
-      <ScrollViewer Grid.Row="1">
-        <ContentControl Content="{Binding CurrentPage}" />
-      </ScrollViewer>
+      <fa:InfoBar Grid.Row="1"
+                  IsOpen="{Binding IsStatusOpen}"
+                  Severity="{Binding StatusSeverity}"
+                  Title="{Binding StatusTitle}"
+                  Message="{Binding Status.Message}"
+                  IsClosable="{Binding Status.IsError}"
+                  CloseButtonCommand="{Binding DismissErrorCommand}"
+                  Margin="0,0,0,14" />
+
+      <Border Grid.Row="2"
+              Classes="main-shell-content-wrap"
+              Background="{DynamicResource CardBackgroundBrush}"
+              BorderBrush="{DynamicResource CardBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="18"
+              ClipToBounds="True">
+        <TransitioningContentControl Content="{Binding CurrentPage}" Padding="24">
+          <TransitioningContentControl.PageTransition>
+            <animation:CrossFade Duration="0:0:0.25" />
+          </TransitioningContentControl.PageTransition>
+        </TransitioningContentControl>
+      </Border>
     </Grid>
   </Grid>
 </Window>
-

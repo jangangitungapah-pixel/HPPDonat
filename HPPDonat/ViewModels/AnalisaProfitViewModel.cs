@@ -1,14 +1,18 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
 using HPPDonat.Services;
 using ReactiveUI;
 
 namespace HPPDonat.ViewModels;
 
-public sealed class AnalisaProfitViewModel : ViewModelBase
+public sealed class AnalisaProfitViewModel : ViewModelBase, IDisposable
 {
+    public override string Title => "Analisa Profit";
+
     private readonly IAppStateService _appStateService;
     private readonly IProductionCalculationService _productionCalculationService;
     private readonly IProfitService _profitService;
+    private readonly CompositeDisposable _disposables = new();
 
     private decimal _simulasiTargetProfitPersen;
     private decimal _simulasiWastePersen;
@@ -33,10 +37,19 @@ public sealed class AnalisaProfitViewModel : ViewModelBase
         _appStateService.Calculation.PropertyChanged += OnAppStateChanged;
         _appStateService.ProduksiSetting.PropertyChanged += OnAppStateChanged;
 
+        Disposable
+            .Create(() =>
+            {
+                _appStateService.Calculation.PropertyChanged -= OnAppStateChanged;
+                _appStateService.ProduksiSetting.PropertyChanged -= OnAppStateChanged;
+            })
+            .DisposeWith(_disposables);
+
         this.WhenAnyValue(
                 viewModel => viewModel.SimulasiTargetProfitPersen,
                 viewModel => viewModel.SimulasiWastePersen)
-            .Subscribe(_ => HitungSimulasi());
+            .Subscribe(_ => HitungSimulasi())
+            .DisposeWith(_disposables);
 
         HitungSimulasi();
     }
@@ -83,6 +96,11 @@ public sealed class AnalisaProfitViewModel : ViewModelBase
         private set => this.RaiseAndSetIfChanged(ref _simulasiProfitBulanan, value);
     }
 
+    public void Dispose()
+    {
+        _disposables.Dispose();
+    }
+
     private void OnAppStateChanged(object? sender, PropertyChangedEventArgs e)
     {
         HitungSimulasi();
@@ -109,4 +127,3 @@ public sealed class AnalisaProfitViewModel : ViewModelBase
         SimulasiProfitBulanan = profitBulanan;
     }
 }
-

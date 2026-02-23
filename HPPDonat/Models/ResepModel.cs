@@ -6,6 +6,7 @@ public sealed class ResepModel : ReactiveObject
 {
     private int _id;
     private int _bahanId;
+    private int _varianId = 1;
     private decimal _jumlahDipakai;
 
     public int Id
@@ -20,10 +21,15 @@ public sealed class ResepModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _bahanId, value);
     }
 
+    public int VarianId
+    {
+        get => _varianId;
+        set => this.RaiseAndSetIfChanged(ref _varianId, value);
+    }
+
     public decimal JumlahDipakai
     {
         get => _jumlahDipakai;
         set => this.RaiseAndSetIfChanged(ref _jumlahDipakai, value);
     }
 }
-

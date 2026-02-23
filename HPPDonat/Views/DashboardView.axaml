@@ -1,73 +1,245 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:HPPDonat.ViewModels"
-             mc:Ignorable="d"
-             d:DesignWidth="1024"
-             d:DesignHeight="720"
+             xmlns:ic="using:FluentIcons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="HPPDonat.Views.DashboardView"
              x:DataType="viewModels:DashboardViewModel">
-  <StackPanel Spacing="12">
-    <TextBlock Classes="section-title" Text="Ringkasan Produksi" />
+  <Grid Classes="dashboard-root" RowDefinitions="Auto,Auto,*">
+    <Border Grid.Row="0" Classes="dashboard-hero" Margin="0,0,0,16">
+      <Grid ColumnDefinitions="2*,1.2*" ColumnSpacing="20">
+        <StackPanel Spacing="14">
+          <StackPanel Spacing="4">
+            <TextBlock Text="{Binding Greeting, StringFormat='{}{0}, Chef!'}" Classes="dashboard-title" />
+            <TextBlock Text="{Binding CurrentDate}" Classes="dashboard-muted" />
+          </StackPanel>
 
-    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
-      <Border Grid.Row="0" Grid.Column="0" Classes="card" ToolTip.Tip="Total modal adonan dari seluruh bahan dalam 1 batch.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="Total Modal Adonan" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" />
+          <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+            <Border Classes="dashboard-chip-icon">
+              <ic:SymbolIcon Symbol="Tag" Classes="dashboard-chip-symbol" />
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="2">
+              <TextBlock Text="Harga Jual Rekomendasi" Classes="dashboard-muted" />
+              <TextBlock Text="{Binding Ringkasan.HargaJual, Converter={StaticResource RupiahConverter}}" Classes="dashboard-hero-value" />
+            </StackPanel>
+          </Grid>
+
+          <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="10">
+            <Border Classes="dashboard-chip">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <ic:SymbolIcon Symbol="BuildingFactory" Width="14" Height="14" />
+                <TextBlock Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} pcs efektif'}" Classes="dashboard-chip-text" />
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="1" Classes="dashboard-chip">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <ic:SymbolIcon Symbol="Target" Width="14" Height="14" />
+                <TextBlock Text="{Binding ProduksiSetting.TargetProfitPersen, StringFormat='Target {0}%'}" Classes="dashboard-chip-text" />
+              </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Classes="dashboard-chip">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <ic:SymbolIcon Symbol="CalendarMonth" Width="14" Height="14" />
+                <TextBlock Text="{Binding ProduksiSetting.HariProduksiPerBulan, StringFormat='{}{0} hari kerja'}" Classes="dashboard-chip-text" />
+              </StackPanel>
+            </Border>
+          </Grid>
+        </StackPanel>
+
+        <Border Grid.Column="1" Classes="dashboard-pulse-card">
+          <StackPanel Spacing="14">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="Pulse Produksi" Classes="dashboard-panel-title" />
+              <Border Grid.Column="1" Classes="dashboard-mini-badge">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <ic:SymbolIcon Symbol="CalendarCheckmark" Width="12" Height="12" />
+                  <TextBlock Text="Live" FontSize="11" FontWeight="SemiBold" />
+                </StackPanel>
+              </Border>
+            </Grid>
+
+            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="10">
+              <TextBlock Text="Profit harian" Classes="dashboard-muted" />
+              <TextBlock Grid.Column="1" Text="{Binding Ringkasan.EstimasiHarian, Converter={StaticResource RupiahConverter}}" Classes="dashboard-pulse-value" />
+
+              <TextBlock Grid.Row="1" Text="Proyeksi bulanan" Classes="dashboard-muted" />
+              <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Ringkasan.EstimasiBulanan, Converter={StaticResource RupiahConverter}}" Classes="dashboard-pulse-value" />
+
+              <TextBlock Grid.Row="2" Text="Waste saat ini" Classes="dashboard-muted" />
+              <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ProduksiSetting.WastePersen, StringFormat='{}{0}%'}" Classes="dashboard-pulse-value warning" />
+            </Grid>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" ColumnSpacing="12" Margin="0,0,0,16">
+      <Border Classes="dashboard-stat-card">
+        <StackPanel Spacing="8">
+          <ic:SymbolIcon Symbol="Wallet" Classes="dashboard-stat-icon" />
+          <TextBlock Text="Total Modal Batch" Classes="dashboard-stat-title" />
+          <TextBlock Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" Classes="dashboard-stat-value" />
+          <TextBlock Text="Biaya adonan inti per sesi produksi" Classes="dashboard-stat-meta" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="0" Grid.Column="1" Classes="card" ToolTip.Tip="HPP final per donat setelah ditambah total topping aktif.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="HPP Final Donat" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HppFinal, Converter={StaticResource RupiahConverter}}" />
+      <Border Grid.Column="1" Classes="dashboard-stat-card">
+        <StackPanel Spacing="8">
+          <ic:SymbolIcon Symbol="Food" Classes="dashboard-stat-icon" />
+          <TextBlock Text="HPP Dasar Donat" Classes="dashboard-stat-title" />
+          <TextBlock Text="{Binding Ringkasan.HppDonat, Converter={StaticResource RupiahConverter}}" Classes="dashboard-stat-value" />
+          <TextBlock Text="Sebelum topping dan faktor waste" Classes="dashboard-stat-meta" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="1" Grid.Column="0" Classes="card" ToolTip.Tip="Harga jual otomatis berdasarkan target profit dengan pembulatan ke atas per Rp100.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="Harga Jual Rekomendasi" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.HargaJual, Converter={StaticResource RupiahConverter}}" />
+      <Border Grid.Column="2" Classes="dashboard-stat-card">
+        <StackPanel Spacing="8">
+          <ic:SymbolIcon Symbol="MoneyHand" Classes="dashboard-stat-icon" />
+          <TextBlock Text="Profit per Donat" Classes="dashboard-stat-title" />
+          <TextBlock Text="{Binding Ringkasan.ProfitPerDonat, Converter={StaticResource RupiahConverter}}" Classes="dashboard-stat-value positive" />
+          <TextBlock Text="Margin aktual per produk terjual" Classes="dashboard-stat-meta" />
         </StackPanel>
       </Border>
 
-      <Border Grid.Row="1" Grid.Column="1" Classes="card" ToolTip.Tip="Profit estimasi total untuk 1 batch produksi efektif.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="Profit Batch" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.TotalProfit, Converter={StaticResource RupiahConverter}}" />
-        </StackPanel>
-      </Border>
-
-      <Border Grid.Row="2" Grid.Column="0" Classes="card" ToolTip.Tip="Estimasi laba harian menggunakan hasil batch saat ini.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="Estimasi Profit Harian" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.EstimasiHarian, Converter={StaticResource RupiahConverter}}" />
-        </StackPanel>
-      </Border>
-
-      <Border Grid.Row="2" Grid.Column="1" Classes="card" ToolTip.Tip="Estimasi laba bulanan berdasarkan hari produksi per bulan.">
-        <StackPanel>
-          <TextBlock Classes="card-title" Text="Estimasi Profit Bulanan" />
-          <TextBlock Classes="card-value" Text="{Binding Ringkasan.EstimasiBulanan, Converter={StaticResource RupiahConverter}}" />
+      <Border Grid.Column="3" Classes="dashboard-stat-card">
+        <StackPanel Spacing="8">
+          <ic:SymbolIcon Symbol="MoneySettings" Classes="dashboard-stat-icon" />
+          <TextBlock Text="Total Profit Batch" Classes="dashboard-stat-title" />
+          <TextBlock Text="{Binding Ringkasan.TotalProfit, Converter={StaticResource RupiahConverter}}" Classes="dashboard-stat-value positive" />
+          <TextBlock Text="Nilai profit total per batch produksi" Classes="dashboard-stat-meta" />
         </StackPanel>
       </Border>
     </Grid>
 
-    <Border Classes="section-panel" ToolTip.Tip="ProduksiEfektif = JumlahDonatDihasilkan × (1 - WastePersen/100).">
-      <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-        <StackPanel>
-          <TextBlock FontWeight="SemiBold" Text="Produksi Efektif" />
-          <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} donat'}" />
-        </StackPanel>
+    <Grid Grid.Row="2" ColumnDefinitions="1.7*,1.1*" ColumnSpacing="16">
+      <Border Classes="dashboard-surface">
+        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="14">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Cost &amp; Margin Engine" Classes="dashboard-panel-title" />
+              <TextBlock Text="Pantau struktur biaya dari modal sampai profit akhir." Classes="dashboard-muted" />
+            </StackPanel>
+            <ic:SymbolIcon Grid.Column="1" Symbol="ArrowTrending" Width="22" Height="22" Foreground="{DynamicResource AccentBrush}" />
+          </Grid>
 
-        <StackPanel>
-          <TextBlock FontWeight="SemiBold" Text="HPP Setelah Waste" />
-          <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Ringkasan.HppSetelahWaste, Converter={StaticResource RupiahConverter}}" />
-        </StackPanel>
+          <Border Grid.Row="1" Classes="dashboard-meter-shell">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+              <Grid Classes="dashboard-meter-row" ColumnDefinitions="*,Auto">
+                <TextBlock Text="Modal adonan" Classes="dashboard-meter-label" />
+                <TextBlock Grid.Column="1" Text="{Binding Ringkasan.TotalModalAdonan, Converter={StaticResource RupiahConverter}}" Classes="dashboard-meter-value" />
+              </Grid>
+              <ProgressBar Grid.Row="1" Value="100" Maximum="100" Height="7" CornerRadius="6" Foreground="{DynamicResource AccentBrush}" />
+
+              <Grid Grid.Row="2" Classes="dashboard-meter-row" ColumnDefinitions="*,Auto">
+                <TextBlock Text="Rata-rata topping" Classes="dashboard-meter-label" />
+                <TextBlock Grid.Column="1" Text="{Binding Ringkasan.TotalTopping, Converter={StaticResource RupiahConverter}}" Classes="dashboard-meter-value" />
+              </Grid>
+              <ProgressBar Grid.Row="3" Value="45" Maximum="100" Height="7" CornerRadius="6" Foreground="{DynamicResource WarningBrush}" />
+            </Grid>
+          </Border>
+
+          <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Border Classes="dashboard-subpanel">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Kalkulasi Akhir" Classes="dashboard-panel-title" FontSize="14" />
+
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="HPP Final (inc. waste)" Classes="dashboard-muted" />
+                  <TextBlock Grid.Column="1" Text="{Binding Ringkasan.HppSetelahWaste, Converter={StaticResource RupiahConverter}}" Classes="dashboard-meter-value" />
+                </Grid>
+                <ProgressBar Value="{Binding ProduksiSetting.WastePersen}" Maximum="100" Height="6" CornerRadius="6" Foreground="{DynamicResource WarningBrush}" />
+
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="Target margin" Classes="dashboard-muted" />
+                  <TextBlock Grid.Column="1" Text="{Binding ProduksiSetting.TargetProfitPersen, StringFormat='{}{0}%'}" Classes="dashboard-meter-value" />
+                </Grid>
+                <ProgressBar Value="{Binding ProduksiSetting.TargetProfitPersen}" Maximum="100" Height="6" CornerRadius="6" Foreground="{DynamicResource PositiveBrush}" />
+              </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Classes="dashboard-subpanel">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Runway Profit" Classes="dashboard-panel-title" FontSize="14" />
+
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="Produksi efektif" Classes="dashboard-muted" />
+                  <TextBlock Grid.Column="1" Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} pcs'}" Classes="dashboard-meter-value" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="Estimasi harian" Classes="dashboard-muted" />
+                  <TextBlock Grid.Column="1" Text="{Binding Ringkasan.EstimasiHarian, Converter={StaticResource RupiahConverter}}" Classes="dashboard-meter-value positive" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="Estimasi bulanan" Classes="dashboard-muted" />
+                  <TextBlock Grid.Column="1" Text="{Binding Ringkasan.EstimasiBulanan, Converter={StaticResource RupiahConverter}}" Classes="dashboard-meter-value positive" />
+                </Grid>
+
+                <Border Classes="dashboard-divider" />
+                <TextBlock Text="Strategi: jaga waste rendah untuk memperbesar runway profit bulanan." Classes="dashboard-muted" TextWrapping="Wrap" />
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <Grid Grid.Column="1" RowDefinitions="Auto,*" RowSpacing="12">
+        <Border Classes="dashboard-signal">
+          <StackPanel Spacing="10">
+            <TextBlock Text="Signal Board" Classes="dashboard-panel-title" />
+
+            <Grid Classes="dashboard-signal-row" ColumnDefinitions="Auto,*,Auto">
+              <ic:SymbolIcon Symbol="Tag" Width="16" Height="16" />
+              <TextBlock Grid.Column="1" Text="Harga jual" Classes="dashboard-muted" />
+              <TextBlock Grid.Column="2" Text="{Binding Ringkasan.HargaJual, Converter={StaticResource RupiahConverter}}" Classes="dashboard-meter-value" />
+            </Grid>
+
+            <Grid Classes="dashboard-signal-row" ColumnDefinitions="Auto,*,Auto">
+              <ic:SymbolIcon Symbol="BuildingFactory" Width="16" Height="16" />
+              <TextBlock Grid.Column="1" Text="Kapasitas per batch" Classes="dashboard-muted" />
+              <TextBlock Grid.Column="2" Text="{Binding Ringkasan.ProduksiEfektif, StringFormat='{}{0:N0} pcs'}" Classes="dashboard-meter-value" />
+            </Grid>
+
+            <Grid Classes="dashboard-signal-row" ColumnDefinitions="Auto,*,Auto">
+              <ic:SymbolIcon Symbol="Target" Width="16" Height="16" />
+              <TextBlock Grid.Column="1" Text="Target profit" Classes="dashboard-muted" />
+              <TextBlock Grid.Column="2" Text="{Binding ProduksiSetting.TargetProfitPersen, StringFormat='{}{0}%'}" Classes="dashboard-meter-value positive" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Classes="dashboard-surface">
+          <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+            <TextBlock Text="Quick Actions" Classes="dashboard-panel-title" />
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10">
+              <Button Classes="dashboard-action">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                  <ic:SymbolIcon Symbol="FoodPizza" Width="24" Height="24" />
+                  <TextBlock Text="Kelola Resep" FontWeight="SemiBold" />
+                </StackPanel>
+              </Button>
+              <Button Grid.Column="1" Classes="dashboard-action">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                  <ic:SymbolIcon Symbol="Calculator" Width="24" Height="24" />
+                  <TextBlock Text="Hitung Ulang" FontWeight="SemiBold" />
+                </StackPanel>
+              </Button>
+            </Grid>
+
+            <Border Grid.Row="2" Classes="dashboard-subpanel">
+              <StackPanel Spacing="8">
+                <TextBlock Text="Catatan Operasional" Classes="dashboard-panel-title" FontSize="14" />
+                <TextBlock Text="Fokuskan produksi pada varian dengan margin tertinggi untuk menaikkan profit harian." Classes="dashboard-muted" TextWrapping="Wrap" />
+                <TextBlock Text="Pastikan stok topping terkendali agar HPP final tidak melampaui target." Classes="dashboard-muted" TextWrapping="Wrap" />
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
       </Grid>
-    </Border>
-  </StackPanel>
+    </Grid>
+  </Grid>
 </UserControl>
-

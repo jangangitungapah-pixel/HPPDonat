@@ -1,54 +1,116 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ic="using:FluentIcons.Avalonia">
   <Style Selector="Window">
-    <Setter Property="Background" Value="{DynamicResource AppBackgroundBrush}" />
+    <Setter Property="Background" Value="{DynamicResource AppBackdropGradient}" />
+    <Setter Property="FontFamily" Value="avares://Avalonia.Fonts.Inter#Inter" />
+  </Style>
+
+  <Style Selector="Border.sidebar TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource SidebarTextBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+    <Setter Property="FontSize" Value="13" />
   </Style>
 
   <Style Selector="Border.sidebar">
     <Setter Property="Background" Value="{DynamicResource SidebarBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SidebarBorderBrush}" />
     <Setter Property="BorderThickness" Value="0,0,1,0" />
-    <Setter Property="Padding" Value="18" />
+    <Setter Property="Padding" Value="18,22" />
+    <Setter Property="CornerRadius" Value="0,20,20,0" />
+  </Style>
+
+  <Style Selector="Border.page-header">
+    <Setter Property="Background" Value="{DynamicResource PageHeaderBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="16" />
+    <Setter Property="Padding" Value="16,14" />
+  </Style>
+
+  <Style Selector="Border.status-chip">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Padding" Value="10,6" />
+  </Style>
+
+  <Style Selector="Border.error-banner">
+    <Setter Property="Background" Value="#22B42318" />
+    <Setter Property="BorderBrush" Value="#88B42318" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Padding" Value="12" />
   </Style>
 
   <Style Selector="Button.sidebar-button">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="Margin" Value="0,0,0,8" />
-    <Setter Property="Padding" Value="12,10" />
-    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="14,11" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Background" Value="#22000000" />
+    <Setter Property="Foreground" Value="{DynamicResource SidebarTextBrush}" />
+    <Setter Property="BorderBrush" Value="#22000000" />
+    <Setter Property="BorderThickness" Value="1" />
   </Style>
 
-  <Style Selector="Border.card">
+  <Style Selector="Button.sidebar-button:pointerover">
+    <Setter Property="Background" Value="#33FFFFFF" />
+  </Style>
+
+  <Style Selector="Button.sidebar-button:pressed">
+    <Setter Property="Background" Value="#4DFFFFFF" />
+  </Style>
+
+  <Style Selector="Border.hero">
+    <Setter Property="Background" Value="{DynamicResource HeroGradientBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource HeroBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="18" />
+    <Setter Property="Padding" Value="18" />
+  </Style>
+
+  <Style Selector="Border.kpi-card">
     <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="CornerRadius" Value="14" />
-    <Setter Property="Padding" Value="16" />
-    <Setter Property="Margin" Value="0,0,0,12" />
+    <Setter Property="Padding" Value="14" />
+    <Setter Property="Margin" Value="0,0,0,10" />
+  </Style>
+
+  <Style Selector="Border.kpi-card:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
   </Style>
 
   <Style Selector="Border.section-panel">
     <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="CornerRadius" Value="14" />
     <Setter Property="Padding" Value="16" />
   </Style>
 
   <Style Selector="TextBlock.section-title">
-    <Setter Property="FontSize" Value="20" />
+    <Setter Property="FontSize" Value="22" />
     <Setter Property="FontWeight" Value="SemiBold" />
-    <Setter Property="Margin" Value="0,0,0,10" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
   </Style>
 
   <Style Selector="TextBlock.card-title">
-    <Setter Property="FontSize" Value="13" />
-    <Setter Property="Opacity" Value="0.78" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
   </Style>
 
   <Style Selector="TextBlock.card-value">
-    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontSize" Value="27" />
     <Setter Property="FontWeight" Value="Bold" />
     <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
   </Style>
@@ -56,6 +118,380 @@
   <Style Selector="Button.action-button">
     <Setter Property="CornerRadius" Value="10" />
     <Setter Property="Padding" Value="14,10" />
+    <Setter Property="Background" Value="{DynamicResource AccentGradientBrush}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <Style Selector="Button.ghost-button">
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="14,10" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentStrongBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Button.mini-icon-button">
+    <Setter Property="Width" Value="34" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Button.mini-icon-button:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+    <Setter Property="Background" Value="#11000000" />
+  </Style>
+
+  <Style Selector="DataGrid">
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="ToggleSwitch">
+    <Setter Property="OnContent" Value="Gelap" />
+    <Setter Property="OffContent" Value="Terang" />
+  </Style>
+
+  <!-- Dashboard Overhaul Styles -->
+  <Style Selector="Grid.dashboard-root">
+    <Setter Property="Margin" Value="28" />
+    <Setter Property="RowSpacing" Value="0" />
+  </Style>
+
+  <Style Selector="Border.dashboard-hero">
+    <Setter Property="Background" Value="{DynamicResource HeroGradientBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource HeroBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="22" />
+    <Setter Property="Padding" Value="22" />
+    <Setter Property="BoxShadow" Value="0 10 26 0 #19000000" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-title">
+    <Setter Property="FontSize" Value="34" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-muted">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-hero-value">
+    <Setter Property="FontSize" Value="38" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="Border.dashboard-chip-icon">
+    <Setter Property="Width" Value="52" />
+    <Setter Property="Height" Value="52" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Background" Value="#220077B8" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+  </Style>
+
+  <Style Selector="ic|SymbolIcon.dashboard-chip-symbol">
+    <Setter Property="Width" Value="26" />
+    <Setter Property="Height" Value="26" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Border.dashboard-chip">
+    <Setter Property="Padding" Value="10,7" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Background" Value="#18000000" />
+    <Setter Property="BorderBrush" Value="#22FFFFFF" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-chip-text">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="Border.dashboard-pulse-card">
+    <Setter Property="Background" Value="#1F001B2A" />
+    <Setter Property="BorderBrush" Value="#2EFFFFFF" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="16" />
+    <Setter Property="Padding" Value="16" />
+  </Style>
+
+  <Style Selector="Border.dashboard-mini-badge">
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Background" Value="#1400C853" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-panel-title">
+    <Setter Property="FontSize" Value="17" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-pulse-value">
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-pulse-value.warning">
+    <Setter Property="Foreground" Value="{DynamicResource WarningBrush}" />
+  </Style>
+
+  <Style Selector="Border.dashboard-stat-card">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Padding" Value="16" />
+    <Setter Property="BoxShadow" Value="0 6 14 0 #14000000" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.12" />
+        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.12" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="Border.dashboard-stat-card:pointerover">
+    <Setter Property="RenderTransform" Value="translateY(-3px)" />
+    <Setter Property="BoxShadow" Value="0 12 24 0 #22000000" />
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+  </Style>
+
+  <Style Selector="ic|SymbolIcon.dashboard-stat-icon">
+    <Setter Property="Width" Value="20" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-stat-title">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-stat-value">
+    <Setter Property="FontSize" Value="24" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-stat-value.positive">
+    <Setter Property="Foreground" Value="{DynamicResource PositiveBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-stat-meta">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="Opacity" Value="0.85" />
+  </Style>
+
+  <Style Selector="Border.dashboard-surface">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="18" />
+    <Setter Property="Padding" Value="18" />
+    <Setter Property="BoxShadow" Value="0 8 18 0 #14000000" />
+  </Style>
+
+  <Style Selector="Border.dashboard-meter-shell">
+    <Setter Property="Background" Value="{DynamicResource HeroBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource HeroBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Padding" Value="12" />
+  </Style>
+
+  <Style Selector="Grid.dashboard-meter-row">
+    <Setter Property="ColumnSpacing" Value="12" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-meter-label">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-meter-value">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.dashboard-meter-value.positive">
+    <Setter Property="Foreground" Value="{DynamicResource PositiveBrush}" />
+  </Style>
+
+  <Style Selector="Border.dashboard-subpanel">
+    <Setter Property="Background" Value="#0E000000" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Padding" Value="12" />
+  </Style>
+
+  <Style Selector="Border.dashboard-divider">
+    <Setter Property="Height" Value="1" />
+    <Setter Property="Background" Value="{DynamicResource CardBorderBrush}" />
+  </Style>
+
+  <Style Selector="Border.dashboard-signal">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Padding" Value="14" />
+  </Style>
+
+  <Style Selector="Grid.dashboard-signal-row">
+    <Setter Property="ColumnSpacing" Value="10" />
+  </Style>
+
+  <Style Selector="Button.dashboard-action">
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Padding" Value="16,14" />
+    <Setter Property="Background" Value="{DynamicResource HeroBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource HeroBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Button.dashboard-action:pointerover">
+    <Setter Property="Background" Value="{DynamicResource AccentGradientBrush}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="BorderBrush" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="Button.dashboard-action:pressed">
+    <Setter Property="Opacity" Value="0.9" />
+  </Style>
+
+  <!-- Main Window Overhaul -->
+  <Style Selector="Border.main-shell-sidebar">
+    <Setter Property="Padding" Value="14,16" />
+  </Style>
+
+  <Style Selector="Border.main-shell-brand">
+    <Setter Property="Background" Value="#22000000" />
+    <Setter Property="BorderBrush" Value="#2BFFFFFF" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="16" />
+    <Setter Property="Padding" Value="14" />
+    <Setter Property="Margin" Value="12,10,12,14" />
+  </Style>
+
+  <Style Selector="Border.main-shell-logo-wrap">
+    <Setter Property="Width" Value="44" />
+    <Setter Property="Height" Value="44" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Background" Value="#30FFFFFF" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-brand-title">
+    <Setter Property="FontSize" Value="22" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource SidebarTextBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-brand-subtitle">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{DynamicResource SidebarMutedTextBrush}" />
+    <Setter Property="Opacity" Value="0.95" />
+  </Style>
+
+  <Style Selector="Border.main-shell-side-card">
+    <Setter Property="Padding" Value="12,11" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Background" Value="#20000000" />
+    <Setter Property="BorderBrush" Value="#26FFFFFF" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Border.main-shell-hero">
+    <Setter Property="Background" Value="{DynamicResource HeroGradientBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource HeroBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="22" />
+    <Setter Property="Padding" Value="18" />
+    <Setter Property="BoxShadow" Value="0 10 26 0 #19000000" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-title">
+    <Setter Property="FontSize" Value="34" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-subtitle">
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+  </Style>
+
+  <Style Selector="Border.main-shell-chip">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Padding" Value="11,9" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-chip-label">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{DynamicResource SubtleTextBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-chip-value">
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentStrongBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.main-shell-chip-value.positive">
+    <Setter Property="Foreground" Value="{DynamicResource PositiveBrush}" />
+  </Style>
+
+  <Style Selector="Border.main-shell-kicker">
+    <Setter Property="Padding" Value="8,6" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Background" Value="#18000000" />
+    <Setter Property="BorderBrush" Value="#28FFFFFF" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Border.main-shell-lottie-frame">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource HeroBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Padding" Value="6" />
+  </Style>
+
+  <Style Selector="Border.main-shell-chart-wrap">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Padding" Value="10" />
+  </Style>
+
+  <Style Selector="Border.main-shell-content-wrap">
+    <Setter Property="BoxShadow" Value="0 8 20 0 #14000000" />
   </Style>
 </Styles>
 

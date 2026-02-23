@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="HPPDonat/HPPDonat.csproj" />
+  <Project Path="HPPDonat.Tests/HPPDonat.Tests.csproj" />
 </Solution>

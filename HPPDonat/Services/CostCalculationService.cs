@@ -31,17 +31,16 @@ public sealed class CostCalculationService : ICostCalculationService
 
     public decimal HitungTotalTopping(IEnumerable<ToppingModel> toppingItems)
     {
-        return toppingItems.Where(topping => topping.IsActive).Sum(topping => topping.BiayaPerDonat);
+        return toppingItems
+            .Where(topping => topping.IsActive)
+            .Sum(topping => topping.BiayaPerDonat < 0m ? 0m : topping.BiayaPerDonat);
     }
 
     public decimal HitungHppFinal(decimal hppDonat, decimal totalTopping)
     {
-        if (hppDonat <= 0m)
-        {
-            return 0m;
-        }
-
-        return hppDonat + totalTopping;
+        var hppDasar = hppDonat < 0m ? 0m : hppDonat;
+        var topping = totalTopping < 0m ? 0m : totalTopping;
+        return hppDasar + topping;
     }
 }
 

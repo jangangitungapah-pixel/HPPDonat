@@ -1,8 +1,10 @@
-﻿<Application xmlns="https://github.com/avaloniaui"
+<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModels="using:HPPDonat.ViewModels"
              xmlns:views="using:HPPDonat.Views"
              xmlns:helpers="using:HPPDonat.Helpers"
+             xmlns:faStyling="using:FluentAvalonia.Styling"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="HPPDonat.App"
              RequestedThemeVariant="Default">
   <Application.DataTemplates>
@@ -29,30 +31,86 @@
   <Application.Resources>
     <ResourceDictionary>
       <helpers:RupiahConverter x:Key="RupiahConverter" />
+      <helpers:ValidationBrushConverter x:Key="ValidationBrushConverter" />
+      <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-          <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FFF4F6FA" />
-          <SolidColorBrush x:Key="SidebarBorderBrush" Color="#FFD5DEEA" />
+          <SolidColorBrush x:Key="AppBackgroundBrush" Color="#FFF5F8FC" />
+          <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FF11283A" />
+          <SolidColorBrush x:Key="SidebarBorderBrush" Color="#FF26445C" />
+          <SolidColorBrush x:Key="SidebarTextBrush" Color="#FFEAF2F8" />
+          <SolidColorBrush x:Key="SidebarMutedTextBrush" Color="#FFC1D5E4" />
+
           <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFFFF" />
-          <SolidColorBrush x:Key="CardBorderBrush" Color="#FFE3E8F0" />
-          <SolidColorBrush x:Key="AccentBrush" Color="#FF1E6BA8" />
-          <SolidColorBrush x:Key="AppBackgroundBrush" Color="#FFF8FAFD" />
+          <SolidColorBrush x:Key="CardBorderBrush" Color="#FFD7E4EF" />
+          <SolidColorBrush x:Key="HeroBackgroundBrush" Color="#FFEFF6FF" />
+          <SolidColorBrush x:Key="HeroBorderBrush" Color="#FFCEE2F4" />
+          <SolidColorBrush x:Key="PageHeaderBackgroundBrush" Color="#FFFDFEFF" />
+
+          <SolidColorBrush x:Key="AccentBrush" Color="#FF0077B8" />
+          <SolidColorBrush x:Key="AccentStrongBrush" Color="#FF005E90" />
+          <SolidColorBrush x:Key="PositiveBrush" Color="#FF0A8558" />
+          <SolidColorBrush x:Key="WarningBrush" Color="#FFC36900" />
+          <SolidColorBrush x:Key="SubtleTextBrush" Color="#FF5B6F84" />
+
+          <LinearGradientBrush x:Key="AppBackdropGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFF5F8FC" Offset="0" />
+            <GradientStop Color="#FFE8F1FB" Offset="1" />
+          </LinearGradientBrush>
+
+          <LinearGradientBrush x:Key="HeroGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFEEF7FF" Offset="0" />
+            <GradientStop Color="#FFDCEEFF" Offset="1" />
+          </LinearGradientBrush>
+
+          <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FF0D8AD0" Offset="0" />
+            <GradientStop Color="#FF42B3F2" Offset="1" />
+          </LinearGradientBrush>
         </ResourceDictionary>
+
         <ResourceDictionary x:Key="Dark">
-          <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FF192531" />
-          <SolidColorBrush x:Key="SidebarBorderBrush" Color="#FF2A3A49" />
-          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FF1E2B36" />
-          <SolidColorBrush x:Key="CardBorderBrush" Color="#FF304454" />
-          <SolidColorBrush x:Key="AccentBrush" Color="#FF65B3EE" />
-          <SolidColorBrush x:Key="AppBackgroundBrush" Color="#FF111B24" />
+          <SolidColorBrush x:Key="AppBackgroundBrush" Color="#FF0D1721" />
+          <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FF111B24" />
+          <SolidColorBrush x:Key="SidebarBorderBrush" Color="#FF2B3B4A" />
+          <SolidColorBrush x:Key="SidebarTextBrush" Color="#FFE3EEF8" />
+          <SolidColorBrush x:Key="SidebarMutedTextBrush" Color="#FF99B2C6" />
+
+          <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FF1A2833" />
+          <SolidColorBrush x:Key="CardBorderBrush" Color="#FF304656" />
+          <SolidColorBrush x:Key="HeroBackgroundBrush" Color="#FF1A3347" />
+          <SolidColorBrush x:Key="HeroBorderBrush" Color="#FF2D4D68" />
+          <SolidColorBrush x:Key="PageHeaderBackgroundBrush" Color="#FF182634" />
+
+          <SolidColorBrush x:Key="AccentBrush" Color="#FF57C6FF" />
+          <SolidColorBrush x:Key="AccentStrongBrush" Color="#FF1EA7E8" />
+          <SolidColorBrush x:Key="PositiveBrush" Color="#FF4FD8A2" />
+          <SolidColorBrush x:Key="WarningBrush" Color="#FFFFB053" />
+          <SolidColorBrush x:Key="SubtleTextBrush" Color="#FFAAC0D4" />
+
+          <LinearGradientBrush x:Key="AppBackdropGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF0D1721" Offset="0" />
+            <GradientStop Color="#FF152736" Offset="1" />
+          </LinearGradientBrush>
+
+          <LinearGradientBrush x:Key="HeroGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF1B3347" Offset="0" />
+            <GradientStop Color="#FF183A54" Offset="1" />
+          </LinearGradientBrush>
+
+          <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FF1EA7E8" Offset="0" />
+            <GradientStop Color="#FF57C6FF" Offset="1" />
+          </LinearGradientBrush>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
     </ResourceDictionary>
   </Application.Resources>
 
   <Application.Styles>
-    <FluentTheme />
+    <faStyling:FluentAvaloniaTheme />
+    <materialIcons:MaterialIconStyles />
     <StyleInclude Source="avares://HPPDonat/Styles/AppStyles.axaml" />
   </Application.Styles>
 </Application>
-

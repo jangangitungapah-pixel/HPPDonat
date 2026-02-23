@@ -1,20 +1,24 @@
-﻿using HPPDonat.Models;
-using HPPDonat.Services;
-using ReactiveUI;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
+using HPPDonat.Models;
+using HPPDonat.Services;
+using ReactiveUI;
 
 namespace HPPDonat.ViewModels;
 
 public sealed class ToppingViewModel : ViewModelBase
 {
+    public override string Title => "Manajemen Topping";
+
     private readonly IAppStateService _appStateService;
+    private readonly IUserDialogService _dialogService;
     private ToppingModel? _selectedTopping;
 
-    public ToppingViewModel(IAppStateService appStateService)
+    public ToppingViewModel(IAppStateService appStateService, IUserDialogService dialogService)
     {
         _appStateService = appStateService;
+        _dialogService = dialogService;
 
         TambahToppingCommand = ReactiveCommand.CreateFromTask(() => _appStateService.TambahToppingAsync());
 
@@ -22,9 +26,24 @@ public sealed class ToppingViewModel : ViewModelBase
             .WhenAnyValue(viewModel => viewModel.SelectedTopping)
             .Select(topping => topping is not null);
 
-        HapusToppingCommand = ReactiveCommand.CreateFromTask(
-            () => _appStateService.HapusToppingAsync(SelectedTopping),
-            canDelete);
+        HapusToppingCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (SelectedTopping is null)
+            {
+                return;
+            }
+
+            var disetujui = await _dialogService.ConfirmAsync(
+                "Konfirmasi Hapus Topping",
+                $"Yakin ingin menghapus topping '{SelectedTopping.NamaTopping}'?");
+
+            if (!disetujui)
+            {
+                return;
+            }
+
+            await _appStateService.HapusToppingAsync(SelectedTopping);
+        }, canDelete);
     }
 
     public ObservableCollection<ToppingModel> ToppingItems => _appStateService.ToppingItems;
@@ -41,4 +60,3 @@ public sealed class ToppingViewModel : ViewModelBase
 
     public CalculationOutputModel Ringkasan => _appStateService.Calculation;
 }
-

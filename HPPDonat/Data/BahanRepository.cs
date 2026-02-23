@@ -19,7 +19,7 @@ public sealed class BahanRepository : IBahanRepository
         await connection.OpenAsync();
 
         await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT Id, NamaBahan, NettoPerPack, HargaPerPack FROM Bahan ORDER BY Id";
+        command.CommandText = "SELECT Id, NamaBahan, Satuan, NettoPerPack, HargaPerPack FROM Bahan ORDER BY Id";
 
         await using var reader = await command.ExecuteReaderAsync();
         while (await reader.ReadAsync())
@@ -28,8 +28,9 @@ public sealed class BahanRepository : IBahanRepository
             {
                 Id = reader.GetInt32(0),
                 NamaBahan = reader.GetString(1),
-                NettoPerPack = reader.GetDecimal(2),
-                HargaPerPack = reader.GetDecimal(3)
+                Satuan = reader.GetString(2),
+                NettoPerPack = reader.GetDecimal(3),
+                HargaPerPack = reader.GetDecimal(4)
             });
         }
 
@@ -43,11 +44,12 @@ public sealed class BahanRepository : IBahanRepository
 
         await using var command = connection.CreateCommand();
         command.CommandText = """
-            INSERT INTO Bahan (NamaBahan, NettoPerPack, HargaPerPack)
-            VALUES ($nama, $netto, $harga);
+            INSERT INTO Bahan (NamaBahan, Satuan, NettoPerPack, HargaPerPack)
+            VALUES ($nama, $satuan, $netto, $harga);
             SELECT last_insert_rowid();
             """;
         command.Parameters.AddWithValue("$nama", bahan.NamaBahan);
+        command.Parameters.AddWithValue("$satuan", bahan.Satuan);
         command.Parameters.AddWithValue("$netto", bahan.NettoPerPack);
         command.Parameters.AddWithValue("$harga", bahan.HargaPerPack);
 
@@ -65,12 +67,14 @@ public sealed class BahanRepository : IBahanRepository
         command.CommandText = """
             UPDATE Bahan
             SET NamaBahan = $nama,
+                Satuan = $satuan,
                 NettoPerPack = $netto,
                 HargaPerPack = $harga
             WHERE Id = $id;
             """;
         command.Parameters.AddWithValue("$id", bahan.Id);
         command.Parameters.AddWithValue("$nama", bahan.NamaBahan);
+        command.Parameters.AddWithValue("$satuan", bahan.Satuan);
         command.Parameters.AddWithValue("$netto", bahan.NettoPerPack);
         command.Parameters.AddWithValue("$harga", bahan.HargaPerPack);
         await command.ExecuteNonQueryAsync();
@@ -87,4 +91,3 @@ public sealed class BahanRepository : IBahanRepository
         await command.ExecuteNonQueryAsync();
     }
 }
-
